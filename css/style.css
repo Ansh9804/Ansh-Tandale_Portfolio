@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 /* --- General Reset --- */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; cursor: none; /* Hide default cursor */ }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; /* Cursor restored to default */ }
 body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
 a { text-decoration: none; color: inherit; transition: 0.3s; }
 ul { list-style: none; }
@@ -20,7 +20,6 @@ h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 700; }
     --nav-bg: rgba(11, 12, 16, 0.95);
     --shadow-light: rgba(255, 255, 255, 0.05);
     --shadow-dark: rgba(0, 0, 0, 0.5);
-    --cursor-color: #66fcf1;
 }
 
 /* --- Light Mode Variables --- */
@@ -35,16 +34,7 @@ body.light-mode {
     --nav-bg: rgba(224, 229, 236, 0.95);
     --shadow-light: #ffffff;
     --shadow-dark: #a3b1c6;
-    --cursor-color: #2962ff;
 }
-
-/* --- Custom Cursor --- */
-.cursor-dot, .cursor-outline {
-    position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none;
-}
-.cursor-dot { width: 8px; height: 8px; background-color: var(--cursor-color); }
-.cursor-outline { width: 40px; height: 40px; border: 2px solid var(--cursor-color); transition: width 0.2s, height 0.2s, background-color 0.2s; }
-body:hover .cursor-outline.hovered { width: 60px; height: 60px; background-color: rgba(102, 252, 241, 0.1); mix-blend-mode: difference; }
 
 /* --- Background Animation Canvas --- */
 #bg-canvas {
@@ -99,7 +89,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
     border-radius: 50%; padding: 4px;
     background: linear-gradient(to right, var(--primary), var(--secondary));
     box-shadow: 0 0 20px rgba(102, 252, 241, 0.3);
-    animation: float 6s ease-in-out infinite; /* Floating Effect */
+    animation: float 6s ease-in-out infinite;
 }
 @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
 
@@ -109,7 +99,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
 .hero h1 { font-size: 3.5rem; margin-bottom: 10px; line-height: 1.2; color: var(--header-color); }
 .hero h1 span { color: var(--primary); }
 
-/* Waving Hand Animation */
+/* Waving Hand */
 .wave { display: inline-block; animation: wave-animation 2.5s infinite; transform-origin: 70% 70%; }
 @keyframes wave-animation { 0% { transform: rotate( 0.0deg) } 10% { transform: rotate(14.0deg) } 20% { transform: rotate(-8.0deg) } 30% { transform: rotate(14.0deg) } 40% { transform: rotate(-4.0deg) } 50% { transform: rotate(10.0deg) } 60% { transform: rotate( 0.0deg) } 100% { transform: rotate( 0.0deg) } }
 
@@ -169,7 +159,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
     transform-style: preserve-3d;
 }
 
-/* Card Hover Interactions */
+/* Hover Effects */
 .project-card:hover h3, .contact-card:hover h3 { color: var(--primary); }
 .icon-box { font-size: 2rem; color: var(--primary); margin-bottom: 20px; transition: 0.3s; }
 .contact-card:hover .icon-box, .skill-category:hover .icon-box { transform: scale(1.2) rotate(10deg); } 
