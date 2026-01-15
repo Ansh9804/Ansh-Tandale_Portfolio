@@ -17,15 +17,17 @@ body {
     color: #e6e6e6;
     line-height: 1.75;
     overflow-x: hidden;
+    padding-top: 70px; /* offset for fixed navbar */
 }
 
 /* =====================
-   BACKGROUND (SILENT LUXURY)
+   BACKGROUND CANVAS
 ===================== */
 #bg-canvas {
     position: fixed;
     inset: 0;
     z-index: -1;
+    pointer-events: none;
     background:
         radial-gradient(circle at 25% 20%, rgba(79,172,254,0.08), transparent 40%),
         radial-gradient(circle at 75% 80%, rgba(0,242,254,0.05), transparent 45%),
@@ -33,31 +35,40 @@ body {
 }
 
 /* =====================
-   NAVBAR (FLOATING GLASS)
+   FIXED NAVBAR (ELITE)
 ===================== */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 6%;
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 1000;
-    background: rgba(12,14,18,0.7);
+    left: 0;
+    width: 100%;
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 6%;
+    background: rgba(12,14,18,0.88);
     backdrop-filter: blur(18px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    z-index: 9999;
 }
 
+/* Logo */
 .logo {
     font-size: 1.55rem;
     font-weight: 600;
     letter-spacing: 0.4px;
     color: #5fb3ff;
+    white-space: nowrap;
 }
 
+/* Navigation Links */
 .nav-links {
     list-style: none;
     display: flex;
+    align-items: center;
     gap: 28px;
 }
 
@@ -66,7 +77,7 @@ body {
     font-weight: 500;
     color: #cfcfcf;
     opacity: 0.85;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.3s ease;
 }
 
 .nav-links a:hover,
@@ -74,11 +85,16 @@ body {
     opacity: 1;
 }
 
+/* Remove hamburger permanently */
+.hamburger {
+    display: none !important;
+}
+
 /* =====================
-   HERO (SLOW REVEAL)
+   HERO
 ===================== */
 .hero {
-    min-height: 90vh;
+    min-height: calc(90vh - 70px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -119,7 +135,7 @@ body {
 }
 
 /* =====================
-   BUTTONS (ELITE MOTION)
+   BUTTONS
 ===================== */
 .btn {
     padding: 12px 32px;
@@ -152,7 +168,7 @@ body {
 }
 
 /* =====================
-   SECTIONS (CALM SPACING)
+   SECTIONS
 ===================== */
 .section-container {
     padding: 100px 10%;
@@ -174,7 +190,7 @@ body {
 }
 
 /* =====================
-   GLASS CARDS (ELITE FEEL)
+   GLASS CARDS
 ===================== */
 .project-card,
 .skill-category,
@@ -202,7 +218,7 @@ body {
 }
 
 /* =====================
-   TIMELINE (REFINED)
+   TIMELINE
 ===================== */
 .timeline-item {
     border-left: 3px solid rgba(95,179,255,0.7);
@@ -237,7 +253,7 @@ body {
 }
 
 /* =====================
-   TECH STACK (SOFT PILLS)
+   TECH STACK
 ===================== */
 .tech-stack span {
     display: inline-block;
@@ -261,40 +277,11 @@ body {
     align-items: center;
     justify-content: center;
     margin: 0 auto 22px;
-    transition: background 0.4s ease;
 }
 
 .icon-box i {
     font-size: 28px;
     color: #5fb3ff;
-}
-
-/* =====================
-   RESPONSIVE
-===================== */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        background: rgba(10,12,16,0.96);
-        position: absolute;
-        top: 65px;
-        right: 0;
-        width: 100%;
-        padding: 25px 0;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .hero h1 {
-        font-size: 2.2rem;
-    }
-
-    .section-container {
-        padding: 80px 7%;
-    }
 }
 
 /* =====================
@@ -314,7 +301,7 @@ body {
 }
 
 /* =====================
-   PERFORMANCE BOOST
+   PERFORMANCE
 ===================== */
 .project-card,
 .timeline-item,
@@ -324,7 +311,7 @@ body {
 }
 
 /* =====================
-   THEME TOGGLE BUTTON
+   THEME TOGGLE
 ===================== */
 #theme-toggle {
     background: rgba(255,255,255,0.05);
@@ -343,7 +330,7 @@ body {
 }
 
 /* =====================
-   LIGHT MODE (ELITE)
+   LIGHT MODE
 ===================== */
 body.light-mode {
     background: #f6f8fb;
@@ -351,7 +338,7 @@ body.light-mode {
 }
 
 body.light-mode .navbar {
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.9);
     border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
@@ -359,7 +346,7 @@ body.light-mode .project-card,
 body.light-mode .timeline-item,
 body.light-mode .pub-card,
 body.light-mode .contact-card {
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.9);
     border-color: rgba(0,0,0,0.08);
 }
 
