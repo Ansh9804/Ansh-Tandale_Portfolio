@@ -8,24 +8,26 @@ a { text-decoration: none; color: inherit; transition: 0.3s; }
 ul { list-style: none; }
 h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: 700; }
 
-/* --- Background Animation Canvas --- */
+/* --- Background Animation Canvas (Anime Night Theme) --- */
 #bg-canvas {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+    /* Deep Purple to Black Gradient for that "Anime Sky" look */
+    background: radial-gradient(circle at center, #1a0b2e 0%, #050505 100%);
 }
 
 /* --- Theme Variables --- */
 :root {
-    --primary: #4facfe; /* Data Science Blue */
-    --gradient: linear-gradient(145deg, #1e2024, #23272b);
-    --card-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
+    --primary: #4facfe; /* Neon Cyan */
+    --accent: #ff014f; /* Neon Pink for accents */
+    --card-bg: linear-gradient(145deg, #16161a, #1c1c21); /* Slightly darker for contrast */
+    --card-shadow: 10px 10px 20px #0b0b0e, -10px -10px 20px #212126;
     --text-light: #c4cfde;
 }
 
 /* --- Navbar --- */
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 20px 5%; background-color: rgba(16, 16, 16, 0.95);
+    padding: 20px 5%; background-color: rgba(10, 10, 10, 0.9);
     position: sticky; top: 0; z-index: 1000;
     backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05);
 }
@@ -34,7 +36,7 @@ h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: 700; }
 
 .nav-links { display: flex; gap: 30px; }
 .nav-links a { font-size: 0.85rem; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
-.nav-links a:hover, .nav-links a.active { color: var(--primary); }
+.nav-links a:hover, .nav-links a.active { color: var(--primary); text-shadow: 0 0 10px rgba(79, 172, 254, 0.6); }
 .hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #fff; }
 
 /* --- Hero Section --- */
@@ -47,18 +49,18 @@ h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: 700; }
 .profile-img-container {
     width: 180px; height: 180px; margin: 0 auto 30px;
     border-radius: 50%; padding: 5px;
-    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-    box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
+    background: linear-gradient(to right, #4facfe 0%, #ff014f 100%); /* Cyan to Pink */
+    box-shadow: 0 0 30px rgba(79, 172, 254, 0.6);
 }
 .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #101010; }
 
 .welcome-text { font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-light); margin-bottom: 20px; display: block;}
-.hero h1 { font-size: 3.5rem; margin-bottom: 10px; line-height: 1.2; }
+.hero h1 { font-size: 3.5rem; margin-bottom: 10px; line-height: 1.2; text-shadow: 0 0 20px rgba(0,0,0,0.8); }
 .hero h1 span { color: var(--primary); }
 
 /* Typing Effect */
 .type-wrap { font-size: 1.8rem; font-weight: 600; color: #fff; margin-bottom: 30px; min-height: 1.6em; }
-.typed-text { color: var(--primary); }
+.typed-text { color: var(--primary); text-shadow: 0 0 10px rgba(79, 172, 254, 0.8); }
 
 /* Buttons */
 .hero-btns { margin-top: 40px; }
@@ -71,18 +73,18 @@ h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: 700; }
     background: linear-gradient(to right, #212428, #16181c); color: var(--primary);
     box-shadow: var(--card-shadow); border: none;
 }
-.btn-primary:hover { transform: translateY(-5px); color: #fff; background: var(--primary); }
+.btn-primary:hover { transform: translateY(-5px); color: #fff; background: var(--primary); box-shadow: 0 0 20px rgba(79, 172, 254, 0.6); }
 
 .btn-secondary {
     background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.1);
 }
-.btn-secondary:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-5px); }
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-5px); box-shadow: 0 0 15px rgba(79, 172, 254, 0.4); }
 
 /* Social Icons */
 .social-links { margin-top: 30px; }
 .social-links a {
     display: inline-flex; justify-content: center; align-items: center;
-    width: 60px; height: 60px; background: linear-gradient(145deg, #1e2024, #23272b);
+    width: 60px; height: 60px; background: var(--card-bg);
     border-radius: 6px; margin: 0 10px; font-size: 1.2rem;
     color: var(--text-light); transition: 0.4s;
     box-shadow: var(--card-shadow);
@@ -90,13 +92,14 @@ h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: 700; }
 .social-links a:hover {
     background: linear-gradient(to right, #212428, #16181c);
     color: var(--primary); transform: translateY(-5px);
+    box-shadow: 0 0 15px rgba(79, 172, 254, 0.5);
 }
 
 /* --- Common Section Styles --- */
 .section-container { padding: 100px 10%; min-height: 80vh; }
 .section-header { text-align: center; margin-bottom: 70px; }
 .subtitle { color: var(--primary); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; display: block; margin-bottom: 10px; }
-.section-title { font-size: 3rem; color: #fff; }
+.section-title { font-size: 3rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
 
 /* --- Cards (Neumorphic Style) --- */
 .projects-grid, .skills-grid, .contact-grid, .publications-wrapper {
@@ -104,15 +107,16 @@ h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: 700; }
 }
 
 .project-card, .contact-card, .pub-card, .skill-category, .timeline-item, .cert-list li {
-    background: linear-gradient(145deg, #1e2024, #23272b);
+    background: var(--card-bg);
     padding: 35px; border-radius: 10px;
     box-shadow: var(--card-shadow);
-    transition: 0.4s; position: relative; overflow: hidden;
+    transition: 0.4s; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.03);
 }
 
 .project-card:hover, .contact-card:hover, .pub-card:hover {
     transform: translateY(-7px);
     background: linear-gradient(to right, #212428, #16181c);
+    border-color: rgba(79, 172, 254, 0.3);
 }
 
 /* Card Typography */
@@ -121,7 +125,7 @@ h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: 700; }
 .tech-stack span, .badge {
     background: #101010; color: var(--text-light); padding: 5px 12px;
     border-radius: 4px; font-size: 0.75rem; margin: 0 5px 5px 0; display: inline-block;
-    box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
+    box-shadow: inset 2px 2px 5px #0a0a0c, inset -2px -2px 5px #26262e; /* Inset Shadow */
 }
 
 /* Icons in Cards */
@@ -140,7 +144,7 @@ h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: 700; }
 /* Responsive */
 @media (max-width: 768px) {
     .nav-links {
-        display: none; flex-direction: column; background: #191b1e;
+        display: none; flex-direction: column; background: #151518;
         position: absolute; top: 70px; right: 0; width: 100%;
         padding: 30px; border-top: 1px solid rgba(255,255,255,0.05);
     }
