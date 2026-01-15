@@ -30,11 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 2. Navigation & Theme Toggle ---
+    // --- 2. Navigation & Theme Toggle (PERSISTENT) ---
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
     const themeSwitch = document.querySelector('.theme-switch');
     const body = document.body;
+
+    // CHECK STORAGE: Apply saved theme immediately on load
+    if (localStorage.getItem('theme') === 'light') {
+        body.classList.add('light-mode');
+    }
 
     if (hamburger) {
         hamburger.addEventListener('click', () => {
@@ -45,6 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeSwitch) {
         themeSwitch.addEventListener('click', () => {
             body.classList.toggle('light-mode');
+            
+            // SAVE PREFERENCE: Store 'light' or 'dark' in browser memory
+            if (body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
         });
     }
 
@@ -127,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function animate() {
             requestAnimationFrame(animate);
             
-            // Dynamic color selection based on theme
+            // Dynamic color selection based on ACTIVE theme
             const isLight = document.body.classList.contains('light-mode');
             const clearColor = isLight ? 'rgba(224, 229, 236, 0.2)' : 'rgba(11, 12, 16, 0.15)';
             const color1 = isLight ? '#2962ff' : '#66fcf1';
