@@ -1,42 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. Custom Cursor Logic ---
-    const cursorDot = document.createElement('div');
-    cursorDot.classList.add('cursor-dot');
-    const cursorOutline = document.createElement('div');
-    cursorOutline.classList.add('cursor-outline');
-    document.body.appendChild(cursorDot);
-    document.body.appendChild(cursorOutline);
-
-    window.addEventListener('mousemove', (e) => {
-        const posX = e.clientX;
-        const posY = e.clientY;
-        
-        cursorDot.style.left = `${posX}px`;
-        cursorDot.style.top = `${posY}px`;
-        
-        // Animate outline with slight delay
-        cursorOutline.animate({
-            left: `${posX}px`,
-            top: `${posY}px`
-        }, { duration: 500, fill: "forwards" });
-    });
-
-    // Hover effect for cursor
-    const interactiveElements = document.querySelectorAll('a, .btn, .theme-switch, .project-card, .contact-card, .skill-category');
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => cursorOutline.classList.add('hovered'));
-        el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hovered'));
-    });
-
-
-    // --- 2. Navigation & Theme Toggle (PERSISTENT) ---
+    // --- 1. Navigation & Persistent Theme Toggle ---
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
     const themeSwitch = document.querySelector('.theme-switch');
     const body = document.body;
 
-    // CHECK STORAGE: Apply saved theme immediately on load
+    // Check localStorage on load
     if (localStorage.getItem('theme') === 'light') {
         body.classList.add('light-mode');
     }
@@ -50,17 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeSwitch) {
         themeSwitch.addEventListener('click', () => {
             body.classList.toggle('light-mode');
-            
-            // SAVE PREFERENCE: Store 'light' or 'dark' in browser memory
-            if (body.classList.contains('light-mode')) {
-                localStorage.setItem('theme', 'light');
-            } else {
-                localStorage.setItem('theme', 'dark');
-            }
+            localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
         });
     }
 
-    // --- 3. Typing Animation ---
+    // --- 2. Typing Animation ---
     const typedTextSpan = document.querySelector(".typed-text");
     const textArray = ["Data Analyst", "AI Researcher", "Python Developer", "Cloud Architect"];
     const typingDelay = 100;
@@ -94,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(typedTextSpan) setTimeout(type, newTextDelay + 250);
 
 
-    // --- 4. 3D Tilt Effect (Isometric) ---
+    // --- 3. 3D Tilt Effect (Isometric) ---
     const cards = document.querySelectorAll('.project-card, .contact-card, .pub-card, .skill-category');
     
     cards.forEach(card => {
@@ -106,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            // Calculate tilt based on mouse position relative to card center
             const rotateX = ((y - centerY) / centerY) * -10; 
             const rotateY = ((x - centerX) / centerX) * 10;
             
@@ -119,60 +82,133 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 5. Data Frequency Wave Background (Responsive) ---
+    // --- 4. Particle Network Background (Lively & Clean) ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        let wave = { y: canvas.height / 2, length: 0.01, amplitude: 100, frequency: 0.01 };
-        let increment = wave.frequency;
-        let input = { y: canvas.height / 2, active: false };
+        let particlesArray;
 
-        window.addEventListener('mousemove', (e) => { input.y = e.clientY; input.active = true; });
-        window.addEventListener('touchstart', (e) => { input.y = e.touches[0].clientY; input.active = true; }, {passive: true});
-        window.addEventListener('touchmove', (e) => { input.y = e.touches[0].clientY; input.active = true; }, {passive: true});
-        window.addEventListener('touchend', () => { input.active = false; });
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+        // Mouse Object
+        let mouse = {
+            x: null,
+            y: null,
+            radius: (canvas.height / 80) * (canvas.width / 80)
+        }
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        // Handle Touch for Mobile
+        window.addEventListener('touchstart', (event) => {
+            mouse.x = event.touches[0].clientX;
+            mouse.y = event.touches[0].clientY;
+        }, {passive: true});
+
+        window.addEventListener('resize', () => {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            mouse.radius = (canvas.height / 80) * (canvas.width / 80);
+            init();
+        });
+
+        window.addEventListener('mouseout', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+
+            draw(activeColor) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = activeColor;
+                ctx.fill();
+            }
+
+            update(activeColor) {
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+
+                // Mouse interaction check
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 3;
+                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 3;
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 3;
+                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 3;
+                }
+
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw(activeColor);
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 0.5) - 0.25; // Speed
+                let directionY = (Math.random() * 0.5) - 0.25;
+                let color = '#66fcf1'; // Default
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
 
         function animate() {
             requestAnimationFrame(animate);
-            
-            // Dynamic color selection based on ACTIVE theme
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+            // Dynamic colors based on theme
             const isLight = document.body.classList.contains('light-mode');
-            const clearColor = isLight ? 'rgba(224, 229, 236, 0.2)' : 'rgba(11, 12, 16, 0.15)';
-            const color1 = isLight ? '#2962ff' : '#66fcf1';
-            const color2 = isLight ? '#0039cb' : '#45a29e';
+            const particleColor = isLight ? '#2962ff' : '#66fcf1';
+            const lineColor = isLight ? '41, 98, 255' : '102, 252, 241'; // RGB values for opacity
 
-            ctx.fillStyle = clearColor; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            let targetY = input.active ? input.y : canvas.height / 2;
-            wave.y += (targetY - wave.y) * 0.05;
-
-            drawWave(color1, 0);
-            drawWave(color2, 200);
-
-            increment += wave.frequency;
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update(particleColor);
+            }
+            connect(lineColor);
         }
 
-        function drawWave(color, offset) {
-            ctx.beginPath();
-            ctx.moveTo(0, wave.y);
-            for (let i = 0; i < canvas.width; i++) {
-                let distanceFromCenter = Math.abs(wave.y - (canvas.height/2));
-                let dynamicAmp = wave.amplitude + (distanceFromCenter * 0.2);
-                let y = wave.y + Math.sin(i * wave.length + increment + offset) * (dynamicAmp * Math.sin(increment));
-                
-                // Draw dots for "Data" feel
-                if (i % 12 === 0) { 
-                   ctx.fillStyle = color;
-                   let size = 1.5 + Math.sin(i) * 0.5;
-                   ctx.fillRect(i, y, size, size); 
+        function connect(rgbColor) {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = `rgba(${rgbColor}, ${opacityValue})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
                 }
             }
         }
+
+        init();
         animate();
     }
 });
