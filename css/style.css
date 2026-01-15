@@ -2,9 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 /* --- General Reset --- */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; cursor: none; /* Hide default cursor */ }
 body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
-a { text-decoration: none; color: inherit; transition: 0.3s; }
+a { text-decoration: none; color: inherit; transition: 0.3s; cursor: none; }
+button, .btn, .theme-switch { cursor: none; }
 ul { list-style: none; }
 h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 700; }
 
@@ -20,6 +21,7 @@ h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 700; }
     --nav-bg: rgba(11, 12, 16, 0.95);
     --shadow-light: rgba(255, 255, 255, 0.05);
     --shadow-dark: rgba(0, 0, 0, 0.5);
+    --cursor-color: #33ccff;
 }
 
 /* --- Light Mode Variables --- */
@@ -34,6 +36,28 @@ body.light-mode {
     --nav-bg: rgba(224, 229, 236, 0.95);
     --shadow-light: #ffffff;
     --shadow-dark: #a3b1c6;
+    --cursor-color: #2962ff;
+}
+
+/* --- CUSTOM CURSOR (New) --- */
+.cursor-dot, .cursor-outline {
+    position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none;
+}
+.cursor-dot { 
+    width: 8px; height: 8px; background-color: var(--primary); 
+    box-shadow: 0 0 10px var(--primary);
+}
+.cursor-outline { 
+    width: 35px; height: 35px; border: 1px solid var(--primary); 
+    transition: transform 0.2s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
+    opacity: 0.7;
+}
+/* Hover State for Cursor */
+body.hovering .cursor-outline { 
+    width: 55px; height: 55px; 
+    background-color: rgba(51, 204, 255, 0.05);
+    border-color: transparent;
+    box-shadow: 0 0 20px rgba(51, 204, 255, 0.2);
 }
 
 /* --- Background Animation Canvas --- */
