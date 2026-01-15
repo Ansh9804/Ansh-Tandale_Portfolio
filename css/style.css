@@ -3,9 +3,10 @@
 
 /* --- General Reset --- */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-body { background-color: #101010; color: #fff; line-height: 1.6; overflow-x: hidden; }
+body { background-color: #101010; color: #c4cfde; line-height: 1.6; overflow-x: hidden; }
 a { text-decoration: none; color: inherit; transition: 0.3s; }
 ul { list-style: none; }
+h1, h2, h3, h4, h5, h6 { color: #fff; font-weight: 700; }
 
 /* --- Background Animation Canvas --- */
 #bg-canvas {
@@ -13,27 +14,27 @@ ul { list-style: none; }
     background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
 }
 
-/* --- Theme Colors & Gradients --- */
+/* --- Theme Variables --- */
 :root {
-    --primary: #ff014f; /* MeetMe often uses Red/Pink, but we can stick to Blue if you prefer. I'll use a dynamic Blue/Purple gradient for a 'Data' feel */
-    --gradient: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-    --card-bg: rgba(33, 36, 40, 0.85);
+    --primary: #4facfe; /* Data Science Blue */
+    --gradient: linear-gradient(145deg, #1e2024, #23272b);
+    --card-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
     --text-light: #c4cfde;
 }
 
 /* --- Navbar --- */
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 20px 5%; background-color: rgba(16, 16, 16, 0.9);
+    padding: 20px 5%; background-color: rgba(16, 16, 16, 0.95);
     position: sticky; top: 0; z-index: 1000;
     backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 .logo { font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: 1px; }
-.logo span { color: #4facfe; }
+.logo span { color: var(--primary); }
 
 .nav-links { display: flex; gap: 30px; }
-.nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
-.nav-links a:hover, .nav-links a.active { color: #4facfe; border-bottom: 2px solid #4facfe; }
+.nav-links a { font-size: 0.85rem; font-weight: 500; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
+.nav-links a:hover, .nav-links a.active { color: var(--primary); }
 .hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #fff; }
 
 /* --- Hero Section --- */
@@ -41,109 +42,110 @@ ul { list-style: none; }
     height: 100vh; display: flex; align-items: center; justify-content: center;
     text-align: center; padding: 0 20px; position: relative;
 }
-.hero-content { max-width: 800px; z-index: 1; }
+.hero-content { max-width: 900px; z-index: 1; }
 
 .profile-img-container {
     width: 180px; height: 180px; margin: 0 auto 30px;
     border-radius: 50%; padding: 5px;
-    background: var(--gradient); /* Gradient border */
+    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
     box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
 }
 .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #101010; }
 
-.welcome-text { font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); margin-bottom: 15px; }
-.hero h1 { font-size: 3.5rem; font-weight: 700; margin-bottom: 10px; }
-.hero h1 span { color: #4facfe; }
-.type-wrap { font-size: 1.5rem; font-weight: 600; color: #fff; margin-bottom: 40px; min-height: 1.6em; }
-.typed-text { color: #4facfe; }
+.welcome-text { font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-light); margin-bottom: 20px; display: block;}
+.hero h1 { font-size: 3.5rem; margin-bottom: 10px; line-height: 1.2; }
+.hero h1 span { color: var(--primary); }
+
+/* Typing Effect */
+.type-wrap { font-size: 1.8rem; font-weight: 600; color: #fff; margin-bottom: 30px; min-height: 1.6em; }
+.typed-text { color: var(--primary); }
 
 /* Buttons */
-.hero-btns { margin-top: 30px; }
+.hero-btns { margin-top: 40px; }
 .btn {
-    padding: 15px 35px; border-radius: 6px; font-weight: 600; display: inline-block; cursor: pointer;
-    text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; transition: 0.4s;
+    padding: 15px 35px; border-radius: 6px; font-weight: 500; display: inline-block; cursor: pointer;
+    text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; transition: 0.4s;
     margin: 10px;
 }
 .btn-primary {
-    background: var(--gradient); color: #fff; border: none;
-    box-shadow: 0 10px 20px -10px rgba(79, 172, 254, 0.5);
+    background: linear-gradient(to right, #212428, #16181c); color: var(--primary);
+    box-shadow: var(--card-shadow); border: none;
 }
-.btn-primary:hover { transform: translateY(-5px); box-shadow: 0 15px 25px -10px rgba(79, 172, 254, 0.7); }
+.btn-primary:hover { transform: translateY(-5px); color: #fff; background: var(--primary); }
 
 .btn-secondary {
-    background: transparent; color: #fff; border: 2px solid #4facfe;
+    background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.1);
 }
-.btn-secondary:hover { background: #4facfe; color: #fff; transform: translateY(-5px); }
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-5px); }
 
 /* Social Icons */
 .social-links { margin-top: 30px; }
 .social-links a {
     display: inline-flex; justify-content: center; align-items: center;
-    width: 50px; height: 50px; background: rgba(255,255,255,0.05);
+    width: 60px; height: 60px; background: linear-gradient(145deg, #1e2024, #23272b);
     border-radius: 6px; margin: 0 10px; font-size: 1.2rem;
     color: var(--text-light); transition: 0.4s;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+    box-shadow: var(--card-shadow);
 }
 .social-links a:hover {
-    background: var(--gradient); color: #fff; transform: translateY(-5px);
+    background: linear-gradient(to right, #212428, #16181c);
+    color: var(--primary); transform: translateY(-5px);
 }
 
-/* --- Sections --- */
+/* --- Common Section Styles --- */
 .section-container { padding: 100px 10%; min-height: 80vh; }
 .section-header { text-align: center; margin-bottom: 70px; }
-.subtitle { color: #4facfe; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; display: block; margin-bottom: 10px; }
-.section-title { font-size: 2.5rem; font-weight: 700; color: #fff; }
+.subtitle { color: var(--primary); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+.section-title { font-size: 3rem; color: #fff; }
 
-/* --- Cards (MeetMe Style) --- */
+/* --- Cards (Neumorphic Style) --- */
 .projects-grid, .skills-grid, .contact-grid, .publications-wrapper {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px;
 }
 
 .project-card, .contact-card, .pub-card, .skill-category, .timeline-item, .cert-list li {
-    background: var(--card-bg);
+    background: linear-gradient(145deg, #1e2024, #23272b);
     padding: 35px; border-radius: 10px;
-    box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e; /* Soft neumorphic dark shadow */
-    transition: 0.4s; border: 1px solid rgba(255,255,255,0.02);
-    position: relative; overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: 0.4s; position: relative; overflow: hidden;
 }
 
 .project-card:hover, .contact-card:hover, .pub-card:hover {
     transform: translateY(-7px);
-    background: linear-gradient(145deg, #1e2024, #23272b);
-    border-bottom: 3px solid #4facfe;
+    background: linear-gradient(to right, #212428, #16181c);
 }
 
-/* Card Content */
+/* Card Typography */
 .project-info h3, .contact-card h3, .pub-header h3 { font-size: 1.4rem; margin-bottom: 15px; color: #e4e6ea; }
-.role, .cert-details span, .pub-venue { color: #4facfe; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: block; }
+.role, .cert-details span, .pub-venue { color: var(--text-light); font-size: 0.85rem; margin-bottom: 15px; display: block; }
 .tech-stack span, .badge {
     background: #101010; color: var(--text-light); padding: 5px 12px;
     border-radius: 4px; font-size: 0.75rem; margin: 0 5px 5px 0; display: inline-block;
     box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
 }
 
-/* Icons */
-.icon-box {
-    font-size: 2.5rem; color: #4facfe; margin-bottom: 20px;
-}
+/* Icons in Cards */
+.icon-box { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
 
-/* Timeline (About) */
-.timeline-item { border-left: none; display: block; }
-.timeline-item::before { content: ''; display: block; width: 40px; height: 3px; background: #4facfe; margin-bottom: 15px; }
+/* About Timeline */
+.timeline-item { border-left: none; display: block; margin-bottom: 30px; }
+.timeline-item h3 { color: #fff; margin-bottom: 5px; }
+.timeline-item .company { color: var(--primary); font-weight: 500; font-size: 0.9rem; margin-bottom: 15px; display: block; }
 
 /* Certifications */
 .cert-list { display: grid; gap: 30px; grid-template-columns: 1fr; }
 .cert-list li { display: flex; align-items: flex-start; gap: 20px; }
-.cert-list i { font-size: 2rem; margin-top: 5px; color: #4facfe; }
+.cert-list i { font-size: 2rem; margin-top: 5px; color: var(--primary); }
 
 /* Responsive */
 @media (max-width: 768px) {
     .nav-links {
-        display: none; flex-direction: column; background: #101010;
+        display: none; flex-direction: column; background: #191b1e;
         position: absolute; top: 70px; right: 0; width: 100%;
-        padding: 30px; border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 30px; border-top: 1px solid rgba(255,255,255,0.05);
     }
     .nav-links.active { display: flex; }
     .hamburger { display: block; }
     .hero h1 { font-size: 2.5rem; }
+    .section-title { font-size: 2rem; }
 }
