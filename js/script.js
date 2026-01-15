@@ -1,42 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. Custom Cursor Logic ---
-    const cursorDot = document.createElement('div');
-    cursorDot.classList.add('cursor-dot');
-    const cursorOutline = document.createElement('div');
-    cursorOutline.classList.add('cursor-outline');
-    document.body.appendChild(cursorDot);
-    document.body.appendChild(cursorOutline);
-
-    window.addEventListener('mousemove', (e) => {
-        const posX = e.clientX;
-        const posY = e.clientY;
-        
-        cursorDot.style.left = `${posX}px`;
-        cursorDot.style.top = `${posY}px`;
-        
-        // Animate outline with slight delay
-        cursorOutline.animate({
-            left: `${posX}px`,
-            top: `${posY}px`
-        }, { duration: 500, fill: "forwards" });
-    });
-
-    // Hover effect for cursor
-    const interactiveElements = document.querySelectorAll('a, .btn, .theme-switch, .project-card, .contact-card, .skill-category');
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => cursorOutline.classList.add('hovered'));
-        el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hovered'));
-    });
-
-
-    // --- 2. Navigation & Theme Toggle (PERSISTENT) ---
+    // --- 1. Navigation & Persistent Theme Toggle ---
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
     const themeSwitch = document.querySelector('.theme-switch');
     const body = document.body;
 
-    // CHECK STORAGE: Apply saved theme immediately on load
+    // Check localStorage on load
     if (localStorage.getItem('theme') === 'light') {
         body.classList.add('light-mode');
     }
@@ -50,17 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeSwitch) {
         themeSwitch.addEventListener('click', () => {
             body.classList.toggle('light-mode');
-            
-            // SAVE PREFERENCE: Store 'light' or 'dark' in browser memory
-            if (body.classList.contains('light-mode')) {
-                localStorage.setItem('theme', 'light');
-            } else {
-                localStorage.setItem('theme', 'dark');
-            }
+            localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
         });
     }
 
-    // --- 3. Typing Animation ---
+    // --- 2. Typing Animation ---
     const typedTextSpan = document.querySelector(".typed-text");
     const textArray = ["Data Analyst", "AI Researcher", "Python Developer", "Cloud Architect"];
     const typingDelay = 100;
@@ -94,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(typedTextSpan) setTimeout(type, newTextDelay + 250);
 
 
-    // --- 4. 3D Tilt Effect (Isometric) ---
+    // --- 3. 3D Tilt Effect (Isometric) ---
     const cards = document.querySelectorAll('.project-card, .contact-card, .pub-card, .skill-category');
     
     cards.forEach(card => {
@@ -102,14 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
-            // Calculate tilt based on mouse position relative to card center
-            const rotateX = ((y - centerY) / centerY) * -10; 
-            const rotateY = ((x - centerX) / centerX) * 10;
-            
+            const rotateX = ((y - centerY) / centerY) * -8; 
+            const rotateY = ((x - centerX) / centerX) * 8;
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
         });
         
@@ -119,73 +79,155 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 5. Data Frequency Wave Background (Responsive RGB) ---
+    // --- 4. Neural Data Lattice (Data Gravity Effect) ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        let wave = { y: canvas.height / 2, length: 0.01, amplitude: 100, frequency: 0.01 };
-        let increment = wave.frequency;
-        let input = { y: canvas.height / 2, active: false };
+        let particlesArray;
 
-        window.addEventListener('mousemove', (e) => { input.y = e.clientY; input.active = true; });
-        window.addEventListener('touchstart', (e) => { input.y = e.touches[0].clientY; input.active = true; }, {passive: true});
-        window.addEventListener('touchmove', (e) => { input.y = e.touches[0].clientY; input.active = true; }, {passive: true});
-        window.addEventListener('touchend', () => { input.active = false; });
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+        // Mouse acts as a "Gravity Well"
+        let mouse = {
+            x: null,
+            y: null,
+            radius: 150 // Range of gravity
+        }
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+        
+        // Touch support
+        window.addEventListener('touchstart', (e) => {
+            mouse.x = e.touches[0].clientX;
+            mouse.y = e.touches[0].clientY;
+        }, {passive: true});
+        
+        window.addEventListener('touchmove', (e) => {
+            mouse.x = e.touches[0].clientX;
+            mouse.y = e.touches[0].clientY;
+        }, {passive: true});
+
+        window.addEventListener('resize', () => {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            init();
+        });
+
+        window.addEventListener('mouseout', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+                this.baseX = x; // Remember original position
+                this.baseY = y;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update(particleColor, activeColor) {
+                // Normal Movement
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+
+                // Mouse Gravity Logic
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < mouse.radius) {
+                    // Pull particle towards mouse
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    const directionX = forceDirectionX * force * 2; // Pull speed
+                    const directionY = forceDirectionY * force * 2;
+                    
+                    this.x += directionX;
+                    this.y += directionY;
+                    this.color = activeColor; // Highlight color when "analyzed"
+                } else {
+                    // Return to normal color
+                    this.color = particleColor;
+                    
+                    // Optional: Gentle drift back to base path if needed, 
+                    // but simple momentum is often cleaner for networks.
+                    this.x += this.directionX;
+                    this.y += this.directionY;
+                }
+
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 0.5) - 0.25;
+                let directionY = (Math.random() * 0.5) - 0.25;
+                let color = '#66fcf1';
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
 
         function animate() {
             requestAnimationFrame(animate);
-            
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+
             const isLight = document.body.classList.contains('light-mode');
-            const clearColor = isLight ? 'rgba(224, 229, 236, 0.2)' : 'rgba(11, 12, 16, 0.15)';
-            
-            ctx.fillStyle = clearColor; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Base Color: Teal (Dark) / Blue (Light)
+            const particleColor = isLight ? '#2962ff' : '#45a29e'; 
+            // Active Color (Gravity Interaction): Bright White/Cyan or Deep Purple
+            const activeColor = isLight ? '#ff3366' : '#ffffff'; 
+            // Line Color
+            const lineRGB = isLight ? '41, 98, 255' : '102, 252, 241';
 
-            let targetY = input.active ? input.y : canvas.height / 2;
-            wave.y += (targetY - wave.y) * 0.05;
-
-            // Define RGB Colors based on Theme
-            let col1, col2, col3;
-            if (isLight) {
-                // Light Mode Colors (Deep RGB)
-                col1 = '#ff3366'; // Red
-                col2 = '#00c853'; // Green
-                col3 = '#2962ff'; // Blue
-            } else {
-                // Dark Mode Colors (Neon RGB - "Light RGB")
-                col1 = '#ff4d4d'; // Light Neon Red
-                col2 = '#4dff4d'; // Light Neon Green
-                col3 = '#4d4dff'; // Light Neon Blue
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update(particleColor, activeColor);
             }
-
-            // Draw 3 Waves (RGB)
-            drawWave(col1, 0);   // Red Wave
-            drawWave(col2, 150); // Green Wave
-            drawWave(col3, 300); // Blue Wave
-
-            increment += wave.frequency;
+            connect(lineRGB);
         }
 
-        function drawWave(color, offset) {
-            ctx.beginPath();
-            ctx.moveTo(0, wave.y);
-            for (let i = 0; i < canvas.width; i++) {
-                let distanceFromCenter = Math.abs(wave.y - (canvas.height/2));
-                let dynamicAmp = wave.amplitude + (distanceFromCenter * 0.2);
-                let y = wave.y + Math.sin(i * wave.length + increment + offset) * (dynamicAmp * Math.sin(increment));
-                
-                // Draw dots for "Data" feel
-                if (i % 12 === 0) { 
-                   ctx.fillStyle = color;
-                   let size = 1.5 + Math.sin(i) * 0.5;
-                   ctx.fillRect(i, y, size, size); 
+        function connect(rgbColor) {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = `rgba(${rgbColor}, ${opacityValue})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
                 }
             }
         }
+
+        init();
         animate();
     }
 });
