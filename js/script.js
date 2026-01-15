@@ -1,180 +1,139 @@
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- 1. Navigation Logic ---
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
 
-    /* ======================================================
-       1. ELITE SMOOTH SCROLL (INERTIA BASED)
-    ====================================================== */
-    let currentScroll = window.scrollY;
-    let targetScroll = currentScroll;
-    const ease = 0.08;
-
-    function smoothScroll() {
-        targetScroll += (window.scrollY - targetScroll) * ease;
-        window.scrollTo(0, targetScroll);
-        requestAnimationFrame(smoothScroll);
-    }
-    smoothScroll();
-
-
-    /* ======================================================
-       2. SCROLL REVEAL ANIMATIONS
-    ====================================================== */
-    const revealElements = document.querySelectorAll(
-        '.section-container, .project-card, .timeline-item, .pub-card, .contact-card'
-    );
-
-    const observer = new IntersectionObserver(
-        entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('reveal-active');
-                    observer.unobserve(entry.target);
-                }
-            });
-        },
-        { threshold: 0.15 }
-    );
-
-    revealElements.forEach(el => {
-        el.classList.add('reveal');
-        observer.observe(el);
-    });
-
-
-    /* ======================================================
-       3. DARK / LIGHT MODE TOGGLE
-    ====================================================== */
-    const toggleBtn = document.getElementById('theme-toggle');
-    if (toggleBtn) {
-        const icon = toggleBtn.querySelector('i');
-
-        toggleBtn.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-
-            if (document.body.classList.contains('light-mode')) {
-                icon.classList.replace('fa-moon', 'fa-sun');
-                localStorage.setItem('theme', 'light');
-            } else {
-                icon.classList.replace('fa-sun', 'fa-moon');
-                localStorage.setItem('theme', 'dark');
-            }
+    if (hamburger) {
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
         });
+    }
 
-        if (localStorage.getItem('theme') === 'light') {
-            document.body.classList.add('light-mode');
-            icon.classList.replace('fa-moon', 'fa-sun');
+    // --- 2. Typing Animation (Hero Section) ---
+    const typedTextSpan = document.querySelector(".typed-text");
+    const textArray = ["Data Analyst.", "Researcher.", "Python Developer.", "AI Enthusiast."];
+    const typingDelay = 100;
+    const erasingDelay = 50;
+    const newTextDelay = 2000; // Delay between current and next text
+    let textArrayIndex = 0;
+    let charIndex = 0;
+
+    function type() {
+        if (typedTextSpan && charIndex < textArray[textArrayIndex].length) {
+            typedTextSpan.textContent += textArray[textArrayIndex].charAt(charIndex);
+            charIndex++;
+            setTimeout(type, typingDelay);
+        } else if (typedTextSpan) {
+            setTimeout(erase, newTextDelay);
         }
     }
 
+    function erase() {
+        if (typedTextSpan && charIndex > 0) {
+            typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex - 1);
+            charIndex--;
+            setTimeout(erase, erasingDelay);
+        } else if (typedTextSpan) {
+            textArrayIndex++;
+            if (textArrayIndex >= textArray.length) textArrayIndex = 0;
+            setTimeout(type, typingDelay + 1100);
+        }
+    }
 
-    /* ======================================================
-       4. NOISE-BASED FLOW FIELD (ELITE BACKGROUND)
-    ====================================================== */
+    if(typedTextSpan) {
+        setTimeout(type, newTextDelay + 250);
+    }
+
+    // --- 3. Background Neural Network Animation ---
     const canvas = document.getElementById('bg-canvas');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    let time = 0;
-    const particles = [];
-    const PARTICLE_COUNT = 900;
-    const SCALE = 0.002;
-    const SPEED = 0.35;
-
-    const mouse = { x: null, y: null };
-
-    window.addEventListener('mousemove', e => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-    });
-
-    window.addEventListener('mouseleave', () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
-
-    /* -----------------------------
-       SIMPLE PERLIN-LIKE NOISE
-    ----------------------------- */
-    function noise(x, y) {
-        return Math.sin(x * 12.9898 + y * 78.233) * 43758.5453 % 1;
-    }
-
-    class FlowParticle {
-        constructor() {
-            this.reset();
-        }
-
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.life = Math.random() * 300 + 200;
-        }
-
-        update() {
-            const angle =
-                noise(this.x * SCALE + time, this.y * SCALE + time) * Math.PI * 2;
-
-            const vx = Math.cos(angle) * SPEED;
-            const vy = Math.sin(angle) * SPEED;
-
-            this.x += vx;
-            this.y += vy;
-            this.life--;
-
-            if (
-                this.x < 0 || this.x > canvas.width ||
-                this.y < 0 || this.y > canvas.height ||
-                this.life <= 0
-            ) {
-                this.reset();
-            }
-
-            if (mouse.x && mouse.y) {
-                const dx = mouse.x - this.x;
-                const dy = mouse.y - this.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 200) {
-                    this.x -= dx * 0.002;
-                    this.y -= dy * 0.002;
-                }
-            }
-
-            this.draw();
-        }
-
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, 0.8, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(79,172,254,0.45)';
-            ctx.fill();
-        }
-    }
-
-    function initFlow() {
-        particles.length = 0;
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            particles.push(new FlowParticle());
-        }
-    }
-
-    function animateFlow() {
-        ctx.fillStyle = 'rgba(0,0,0,0.08)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        particles.forEach(p => p.update());
-        time += 0.0008;
-
-        requestAnimationFrame(animateFlow);
-    }
-
-    window.addEventListener('resize', () => {
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        initFlow();
-    });
 
-    initFlow();
-    animateFlow();
+        let mouse = { x: null, y: null, radius: (canvas.height/80) * (canvas.width/80) }
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x; this.y = y;
+                this.directionX = directionX; this.directionY = directionY;
+                this.size = size; this.color = color;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = '#4facfe'; // Data Blue
+                ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 3;
+                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 3;
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 3;
+                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 3;
+                }
+                this.x += this.directionX; this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 2) - 1;
+                let directionY = (Math.random() * 2) - 1;
+                let color = '#4facfe';
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                        opacityValue = 1 - (distance/20000);
+                        ctx.strokeStyle = 'rgba(79, 172, 254,' + opacityValue + ')';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
+            connect();
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = innerWidth; canvas.height = innerHeight;
+            init();
+        });
+        init(); animate();
+    }
 });
