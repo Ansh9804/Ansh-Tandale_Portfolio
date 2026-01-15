@@ -1,6 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. Navigation & Persistent Theme Toggle ---
+    // --- 1. NEW CUSTOM CURSOR LOGIC ---
+    // Inject cursor elements via JS so you don't need to change HTML
+    const cursorDot = document.createElement('div');
+    cursorDot.classList.add('cursor-dot');
+    const cursorOutline = document.createElement('div');
+    cursorOutline.classList.add('cursor-outline');
+    document.body.appendChild(cursorDot);
+    document.body.appendChild(cursorOutline);
+
+    window.addEventListener('mousemove', (e) => {
+        const posX = e.clientX;
+        const posY = e.clientY;
+        
+        // Dot follows instantly
+        cursorDot.style.left = `${posX}px`;
+        cursorDot.style.top = `${posY}px`;
+        
+        // Outline follows with lag (CSS transition handles smoothness)
+        cursorOutline.style.left = `${posX}px`;
+        cursorOutline.style.top = `${posY}px`;
+    });
+
+    // Hover effect for interactive elements
+    const interactiveElements = document.querySelectorAll('a, .btn, .theme-switch, .project-card, .contact-card, .skill-category, input, button');
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+    });
+
+
+    // --- 2. Navigation & Persistent Theme Toggle ---
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
     const themeSwitch = document.querySelector('.theme-switch');
@@ -24,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. Typing Animation ---
+    // --- 3. Typing Animation ---
     const typedTextSpan = document.querySelector(".typed-text");
     const textArray = ["Data Analyst", "AI Researcher", "Python Developer", "Cloud Architect"];
     const typingDelay = 100;
@@ -58,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(typedTextSpan) setTimeout(type, newTextDelay + 250);
 
 
-    // --- 3. 3D Tilt Effect (Isometric) ---
+    // --- 4. 3D Tilt Effect (Isometric) ---
     const cards = document.querySelectorAll('.project-card, .contact-card, .pub-card, .skill-category');
     
     cards.forEach(card => {
@@ -79,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 4. Neural Data Lattice (Data Gravity Effect) ---
+    // --- 5. Neural Data Lattice (Gravity Background) ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -88,11 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let particlesArray;
 
-        // Mouse acts as a "Gravity Well"
+        // Mouse acts as a "Gravity Well" for background particles too
         let mouse = {
             x: null,
             y: null,
-            radius: 150 // Range of gravity
+            radius: 150 
         }
 
         window.addEventListener('mousemove', (event) => {
@@ -100,7 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mouse.y = event.y;
         });
         
-        // Touch support
         window.addEventListener('touchstart', (e) => {
             mouse.x = e.touches[0].clientX;
             mouse.y = e.touches[0].clientY;
@@ -130,8 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.directionY = directionY;
                 this.size = size;
                 this.color = color;
-                this.baseX = x; // Remember original position
-                this.baseY = y;
             }
 
             draw() {
@@ -142,36 +169,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             update(particleColor, activeColor) {
-                // Normal Movement
                 if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
                 if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
 
-                // Mouse Gravity Logic
+                // Mouse Gravity Logic for Background
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < mouse.radius) {
-                    // Pull particle towards mouse
                     const forceDirectionX = dx / distance;
                     const forceDirectionY = dy / distance;
                     const force = (mouse.radius - distance) / mouse.radius;
-                    const directionX = forceDirectionX * force * 2; // Pull speed
+                    const directionX = forceDirectionX * force * 2;
                     const directionY = forceDirectionY * force * 2;
                     
                     this.x += directionX;
                     this.y += directionY;
-                    this.color = activeColor; // Highlight color when "analyzed"
+                    this.color = activeColor; 
                 } else {
-                    // Return to normal color
                     this.color = particleColor;
-                    
-                    // Optional: Gentle drift back to base path if needed, 
-                    // but simple momentum is often cleaner for networks.
                     this.x += this.directionX;
                     this.y += this.directionY;
                 }
-
                 this.draw();
             }
         }
@@ -195,11 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.clearRect(0, 0, innerWidth, innerHeight);
 
             const isLight = document.body.classList.contains('light-mode');
-            // Base Color: Teal (Dark) / Blue (Light)
             const particleColor = isLight ? '#2962ff' : '#45a29e'; 
-            // Active Color (Gravity Interaction): Bright White/Cyan or Deep Purple
             const activeColor = isLight ? '#ff3366' : '#ffffff'; 
-            // Line Color
             const lineRGB = isLight ? '41, 98, 255' : '102, 252, 241';
 
             for (let i = 0; i < particlesArray.length; i++) {
