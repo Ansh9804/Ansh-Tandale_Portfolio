@@ -11,7 +11,7 @@
     <canvas id="bg-canvas"></canvas>
 
     <nav class="navbar">
-        <div class="logo">Ansh Tandale</div>
+        <div class="logo">Ansh<span>.</span></div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
@@ -25,42 +25,48 @@
     </nav>
 
     <section class="section-container">
-        <h1 class="section-title">Research Publications</h1>
+        <div class="section-header">
+            <span class="subtitle">Research</span>
+            <h1 class="section-title">Publications</h1>
+        </div>
         
         <div class="publications-wrapper">
-            <div class="pub-card flagship-pub">
+            <div class="pub-card" style="border-bottom: 3px solid #4facfe;">
                 <div class="pub-header">
                     <h3>Sanvaad: A Multimodal Accessibility Framework</h3>
-                    <div class="pub-badges">
-                        <span class="badge badge-arxiv">arXiv:2512.06485</span>
-                        <span class="badge badge-cv">Computer Vision</span>
+                    <div>
+                        <span class="badge" style="background: #b31b1b; color:#fff;">arXiv:2512.06485</span>
                     </div>
                 </div>
-                <p class="pub-authors">Kush Revankar, <strong>Ansh Tandale</strong>, et al.</p>
-                <p class="pub-venue">Submitted to <strong>arXiv (Cornell University)</strong> | Dec 2025</p>
-                <div class="pub-abstract"><p>A lightweight multimodal framework enabling real-time ISL recognition and voice-to-sign translation.</p></div>
-                <div class="pub-links">
-                    <a href="https://arxiv.org/abs/2512.06485" target="_blank" class="btn-sm">View on arXiv</a>
+                <span class="pub-venue">Submitted to arXiv (Cornell University) | Dec 2025</span>
+                <p style="font-size: 0.9rem;">A lightweight multimodal framework enabling real-time ISL recognition and voice-to-sign translation.</p>
+                <div style="margin-top: 15px;">
+                    <a href="https://arxiv.org/abs/2512.06485" target="_blank" class="btn-secondary" style="padding: 5px 15px; font-size: 0.75rem;">Read Paper</a>
                 </div>
             </div>
 
             <div class="pub-card">
                 <div class="pub-header">
                     <h3>Sarcasm Detection in Social Media Text</h3>
-                    <div class="pub-badges"><span class="badge badge-ieee">IEEE Xplore</span><span class="badge badge-scopus">Scopus</span></div>
+                    <div>
+                        <span class="badge" style="background: #00629B; color:#fff;">IEEE Xplore</span>
+                        <span class="badge" style="background: #ff9900; color:#000;">Scopus</span>
+                    </div>
                 </div>
-                <p class="pub-authors"><strong>Ansh Tandale</strong>, Vaidat Patel, et al.</p>
-                <p class="pub-venue">3rd International Conference on Intelligent Cloud Computing (ICoICC 2025)</p>
-                <div class="pub-links"><a href="https://lnkd.in/dQ7JwbsX" target="_blank" class="btn-sm">IEEE Xplore</a></div>
+                <span class="pub-venue">3rd Intl. Conf. on Intelligent Cloud Computing (ICoICC 2025)</span>
+                <p style="font-size: 0.9rem;">Investigates sarcasm detection in informal text using linguistic feature extraction.</p>
+                <div style="margin-top: 15px;">
+                    <a href="https://lnkd.in/dQ7JwbsX" target="_blank" class="btn-secondary" style="padding: 5px 15px; font-size: 0.75rem;">View IEEE</a>
+                </div>
             </div>
 
             <div class="pub-card">
                 <div class="pub-header">
                     <h3>Cloud Forensics: A Critical Review</h3>
-                    <div class="pub-badges"><span class="badge badge-security">Cyber Security</span></div>
+                    <span class="badge" style="background: #2ecc71; color:#000;">Cyber Security</span>
                 </div>
-                <p class="pub-authors"><strong>Ansh Anant Tandale</strong></p>
-                <p class="pub-venue">Intl. Conference on Advancements of Cyber Security (ICACSDF 2025)</p>
+                <span class="pub-venue">Intl. Conf. on Advancements of Cyber Security (ICACSDF 2025)</span>
+                <p style="font-size: 0.9rem;">A comprehensive review of cloud forensics covering investigative techniques and standards.</p>
             </div>
         </div>
     </section>
