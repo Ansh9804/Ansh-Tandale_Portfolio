@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 /* --- General Reset --- */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; /* Cursor restored to default */ }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; cursor: none; /* Hide default cursor */ }
 body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
 a { text-decoration: none; color: inherit; transition: 0.3s; }
 ul { list-style: none; }
@@ -10,16 +10,18 @@ h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 700; }
 
 /* --- Theme Variables (Dark Mode Default) --- */
 :root {
-    --primary: #66fcf1;
-    --secondary: #45a29e;
+    /* Changed from Teal to Light Blue to fit RGB theme */
+    --primary: #33ccff; 
+    --secondary: #5e81f4; 
     --bg-color: #0b0c10;
     --card-bg: rgba(31, 40, 51, 0.9);
-    --card-border: 1px solid rgba(102, 252, 241, 0.1);
+    --card-border: 1px solid rgba(51, 204, 255, 0.1);
     --text-color: #c5c6c7;
-    --header-color: #66fcf1;
+    --header-color: #ffffff;
     --nav-bg: rgba(11, 12, 16, 0.95);
     --shadow-light: rgba(255, 255, 255, 0.05);
     --shadow-dark: rgba(0, 0, 0, 0.5);
+    --cursor-color: #33ccff;
 }
 
 /* --- Light Mode Variables --- */
@@ -34,7 +36,16 @@ body.light-mode {
     --nav-bg: rgba(224, 229, 236, 0.95);
     --shadow-light: #ffffff;
     --shadow-dark: #a3b1c6;
+    --cursor-color: #2962ff;
 }
+
+/* --- Custom Cursor --- */
+.cursor-dot, .cursor-outline {
+    position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none;
+}
+.cursor-dot { width: 8px; height: 8px; background-color: var(--cursor-color); }
+.cursor-outline { width: 40px; height: 40px; border: 2px solid var(--cursor-color); transition: width 0.2s, height 0.2s, background-color 0.2s; }
+body:hover .cursor-outline.hovered { width: 60px; height: 60px; background-color: rgba(51, 204, 255, 0.1); mix-blend-mode: difference; }
 
 /* --- Background Animation Canvas --- */
 #bg-canvas {
@@ -88,7 +99,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
     width: 170px; height: 170px; margin: 0 auto 30px;
     border-radius: 50%; padding: 4px;
     background: linear-gradient(to right, var(--primary), var(--secondary));
-    box-shadow: 0 0 20px rgba(102, 252, 241, 0.3);
+    box-shadow: 0 0 20px rgba(51, 204, 255, 0.3);
     animation: float 6s ease-in-out infinite;
 }
 @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
@@ -119,7 +130,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
     background-color: var(--primary); z-index: -1; transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .btn-primary:hover::before { width: 100%; }
-.btn-primary:hover { color: var(--bg-color); box-shadow: 0 0 20px rgba(102, 252, 241, 0.6); }
+.btn-primary:hover { color: var(--bg-color); box-shadow: 0 0 20px rgba(51, 204, 255, 0.6); }
 
 .btn-secondary { background: var(--card-bg); color: var(--text-color); border: 1px solid transparent; box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); }
 .btn-secondary:hover { transform: translateY(-3px); color: var(--primary); }
