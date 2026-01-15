@@ -296,3 +296,80 @@ body {
         padding: 80px 7%;
     }
 }
+
+/* =====================
+   SCROLL REVEAL
+===================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.reveal-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        opacity 1s cubic-bezier(.19,1,.22,1),
+        transform 1s cubic-bezier(.19,1,.22,1);
+}
+
+/* =====================
+   PERFORMANCE BOOST
+===================== */
+.project-card,
+.timeline-item,
+.pub-card,
+.contact-card {
+    will-change: transform, opacity;
+}
+
+/* =====================
+   THEME TOGGLE BUTTON
+===================== */
+#theme-toggle {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    color: #5fb3ff;
+    font-size: 1rem;
+    transition: all 0.4s ease;
+}
+
+#theme-toggle:hover {
+    background: rgba(95,179,255,0.15);
+}
+
+/* =====================
+   LIGHT MODE (ELITE)
+===================== */
+body.light-mode {
+    background: #f6f8fb;
+    color: #1a1a1a;
+}
+
+body.light-mode .navbar {
+    background: rgba(255,255,255,0.85);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+body.light-mode .project-card,
+body.light-mode .timeline-item,
+body.light-mode .pub-card,
+body.light-mode .contact-card {
+    background: rgba(255,255,255,0.85);
+    border-color: rgba(0,0,0,0.08);
+}
+
+body.light-mode .section-title,
+body.light-mode .highlight {
+    color: #2563eb;
+}
+
+body.light-mode #bg-canvas {
+    background:
+        radial-gradient(circle at 30% 20%, rgba(37,99,235,0.08), transparent 40%),
+        linear-gradient(180deg, #ffffff, #eef2f7);
+}
