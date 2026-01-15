@@ -45,15 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(type, newTextDelay + 250);
     }
 
-    // --- 3. Background Neural Network Animation ---
+    // --- 3. "Neon Fluid" Background Animation ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
-        let particlesArray;
+        let particlesArray = [];
+        const colors = ['#4facfe', '#00f2fe', '#a18cd1', '#ff014f']; // Neon Anime Palette
+        
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        let mouse = { x: null, y: null, radius: (canvas.height/80) * (canvas.width/80) }
+        let mouse = {
+            x: null,
+            y: null,
+            radius: 150
+        }
 
         window.addEventListener('mousemove', (event) => {
             mouse.x = event.x;
@@ -61,79 +67,96 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         class Particle {
-            constructor(x, y, directionX, directionY, size, color) {
-                this.x = x; this.y = y;
-                this.directionX = directionX; this.directionY = directionY;
-                this.size = size; this.color = color;
+            constructor(x, y, dx, dy, size, color) {
+                this.x = x;
+                this.y = y;
+                this.dx = dx;
+                this.dy = dy;
+                this.size = size;
+                this.color = color;
+                this.angle = Math.random() * Math.PI * 2; // For waviness
             }
+
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = '#4facfe'; // Data Blue
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10; // Neon Glow
+                ctx.shadowColor = this.color;
                 ctx.fill();
+                ctx.shadowBlur = 0;
             }
-            update() {
-                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
 
+            update() {
+                // Fluid Wavy Motion
+                this.angle += 0.05;
+                this.y += this.dy + Math.sin(this.angle) * 0.5;
+                this.x += this.dx + Math.cos(this.angle) * 0.5;
+
+                // Wall Bounce
+                if (this.x > canvas.width || this.x < 0) this.dx = -this.dx;
+                if (this.y > canvas.height || this.y < 0) this.dy = -this.dy;
+
+                // Mouse Interaction (Fluid Push)
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx*dx + dy*dy);
-                if (distance < mouse.radius + this.size) {
-                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 3;
-                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 3;
-                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 3;
-                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 3;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < mouse.radius) {
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    const directionX = forceDirectionX * force * 3;
+                    const directionY = forceDirectionY * force * 3;
+
+                    this.x -= directionX;
+                    this.y -= directionY;
                 }
-                this.x += this.directionX; this.y += this.directionY;
+
                 this.draw();
             }
         }
 
         function init() {
             particlesArray = [];
-            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            // Particle count
+            let numberOfParticles = (canvas.height * canvas.width) / 10000; 
+            
             for (let i = 0; i < numberOfParticles; i++) {
-                let size = (Math.random() * 2) + 1;
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                let directionX = (Math.random() * 2) - 1;
-                let directionY = (Math.random() * 2) - 1;
-                let color = '#4facfe';
-                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
-            }
-        }
-
-        function connect() {
-            let opacityValue = 1;
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    if (distance < (canvas.width/7) * (canvas.height/7)) {
-                        opacityValue = 1 - (distance/20000);
-                        ctx.strokeStyle = 'rgba(79, 172, 254,' + opacityValue + ')';
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
-                    }
-                }
+                let size = (Math.random() * 3) + 1;
+                let x = Math.random() * canvas.width;
+                let y = Math.random() * canvas.height;
+                let dx = (Math.random() * 1.5) - 0.75; 
+                let dy = (Math.random() * 1.5) - 0.75; 
+                let color = colors[Math.floor(Math.random() * colors.length)];
+                
+                particlesArray.push(new Particle(x, y, dx, dy, size, color));
             }
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
-            for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
-            connect();
+            // Trail Effect: Draw semi-transparent rect instead of clearRect
+            ctx.fillStyle = 'rgba(16, 16, 16, 0.15)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
         }
 
         window.addEventListener('resize', () => {
-            canvas.width = innerWidth; canvas.height = innerHeight;
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
             init();
         });
-        init(); animate();
+
+        window.addEventListener('mouseout', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        init();
+        animate();
     }
 });
