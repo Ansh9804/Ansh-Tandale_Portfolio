@@ -11,22 +11,23 @@ h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 700; }
 
 /* --- Theme Variables (Dark Mode Default) --- */
 :root {
-    --primary: #33ccff; 
-    --secondary: #5e81f4; 
-    --bg-color: #0b0c10;
-    --card-bg: rgba(31, 40, 51, 0.9);
-    --card-border: 1px solid rgba(51, 204, 255, 0.1);
-    --text-color: #c5c6c7;
+    /* CHANGED TO ELECTRIC BLUE PALETTE */
+    --primary: #2979ff;  /* Bright Electric Blue */
+    --secondary: #536dfe; /* Deep Indigo Blue */
+    --bg-color: #050a14; /* Very Dark Blue/Black Background */
+    --card-bg: rgba(20, 30, 48, 0.9);
+    --card-border: 1px solid rgba(41, 121, 255, 0.2);
+    --text-color: #d1d5db;
     --header-color: #ffffff;
-    --nav-bg: rgba(11, 12, 16, 0.95);
-    --shadow-light: rgba(255, 255, 255, 0.05);
-    --shadow-dark: rgba(0, 0, 0, 0.5);
-    --cursor-color: #33ccff;
+    --nav-bg: rgba(5, 10, 20, 0.95);
+    --shadow-light: rgba(41, 121, 255, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.6);
+    --cursor-color: #2979ff;
 }
 
 /* --- Light Mode Variables --- */
 body.light-mode {
-    --primary: #2962ff;
+    --primary: #0062ff; /* Strong Blue */
     --secondary: #0039cb;
     --bg-color: #e0e5ec;
     --card-bg: #e0e5ec;
@@ -36,10 +37,10 @@ body.light-mode {
     --nav-bg: rgba(224, 229, 236, 0.95);
     --shadow-light: #ffffff;
     --shadow-dark: #a3b1c6;
-    --cursor-color: #2962ff;
+    --cursor-color: #0062ff;
 }
 
-/* --- CUSTOM CURSOR (New) --- */
+/* --- CUSTOM CURSOR --- */
 .cursor-dot, .cursor-outline {
     position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none;
 }
@@ -52,12 +53,11 @@ body.light-mode {
     transition: transform 0.2s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
     opacity: 0.7;
 }
-/* Hover State for Cursor */
 body.hovering .cursor-outline { 
     width: 55px; height: 55px; 
-    background-color: rgba(51, 204, 255, 0.05);
+    background-color: rgba(41, 121, 255, 0.1); /* Blue tint on hover */
     border-color: transparent;
-    box-shadow: 0 0 20px rgba(51, 204, 255, 0.2);
+    box-shadow: 0 0 20px rgba(41, 121, 255, 0.3);
 }
 
 /* --- Background Animation Canvas --- */
@@ -72,7 +72,7 @@ body.hovering .cursor-outline {
     display: flex; justify-content: space-between; align-items: center;
     padding: 15px 5%; background-color: var(--nav-bg);
     position: sticky; top: 0; z-index: 1000;
-    backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px); border-bottom: 1px solid rgba(41, 121, 255, 0.1);
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
 }
 .logo { font-size: 1.5rem; font-weight: 700; color: var(--header-color); letter-spacing: 0.5px; white-space: nowrap; }
@@ -112,7 +112,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
     width: 170px; height: 170px; margin: 0 auto 30px;
     border-radius: 50%; padding: 4px;
     background: linear-gradient(to right, var(--primary), var(--secondary));
-    box-shadow: 0 0 20px rgba(51, 204, 255, 0.3);
+    box-shadow: 0 0 25px rgba(41, 121, 255, 0.5); /* Blue Glow */
     animation: float 6s ease-in-out infinite;
 }
 @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
@@ -143,7 +143,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
     background-color: var(--primary); z-index: -1; transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .btn-primary:hover::before { width: 100%; }
-.btn-primary:hover { color: var(--bg-color); box-shadow: 0 0 20px rgba(51, 204, 255, 0.6); }
+.btn-primary:hover { color: #fff; box-shadow: 0 0 20px rgba(41, 121, 255, 0.6); }
 
 .btn-secondary { background: var(--card-bg); color: var(--text-color); border: 1px solid transparent; box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); }
 .btn-secondary:hover { transform: translateY(-3px); color: var(--primary); }
