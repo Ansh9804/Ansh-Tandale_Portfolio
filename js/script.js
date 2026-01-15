@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Hover effect for cursor
-    const interactiveElements = document.querySelectorAll('a, .btn, .theme-switch, .project-card, .contact-card');
+    const interactiveElements = document.querySelectorAll('a, .btn, .theme-switch, .project-card, .contact-card, .skill-category');
     interactiveElements.forEach(el => {
         el.addEventListener('mouseenter', () => cursorOutline.classList.add('hovered'));
         el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hovered'));
@@ -45,8 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeSwitch) {
         themeSwitch.addEventListener('click', () => {
             body.classList.toggle('light-mode');
-            // Save preference (Optional)
-            // localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
         });
     }
 
@@ -96,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            const rotateX = ((y - centerY) / centerY) * -10; // Max rotation deg
+            // Calculate tilt based on mouse position relative to card center
+            const rotateX = ((y - centerY) / centerY) * -10; 
             const rotateY = ((x - centerX) / centerX) * 10;
             
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
@@ -108,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 5. Data Wave Background (Responsive) ---
+    // --- 5. Data Frequency Wave Background (Responsive) ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -122,12 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('mousemove', (e) => { input.y = e.clientY; input.active = true; });
         window.addEventListener('touchstart', (e) => { input.y = e.touches[0].clientY; input.active = true; }, {passive: true});
         window.addEventListener('touchmove', (e) => { input.y = e.touches[0].clientY; input.active = true; }, {passive: true});
+        window.addEventListener('touchend', () => { input.active = false; });
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
         function animate() {
             requestAnimationFrame(animate);
-            // Color adapts to Light/Dark mode via getComputedStyle logic or hardcoded variables
-            // Check body class for color selection
+            
+            // Dynamic color selection based on theme
             const isLight = document.body.classList.contains('light-mode');
             const clearColor = isLight ? 'rgba(224, 229, 236, 0.2)' : 'rgba(11, 12, 16, 0.15)';
             const color1 = isLight ? '#2962ff' : '#66fcf1';
@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let dynamicAmp = wave.amplitude + (distanceFromCenter * 0.2);
                 let y = wave.y + Math.sin(i * wave.length + increment + offset) * (dynamicAmp * Math.sin(increment));
                 
+                // Draw dots for "Data" feel
                 if (i % 12 === 0) { 
                    ctx.fillStyle = color;
                    let size = 1.5 + Math.sin(i) * 0.5;
