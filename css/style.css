@@ -385,3 +385,28 @@ body.light-mode #bg-canvas {
     color: #4facfe;
     box-shadow: 0 0 28px rgba(79,172,254,0.45);
 }
+
+/* =====================
+   REMOVE UNDERLINES (GLOBAL FIX)
+===================== */
+
+/* Navbar links */
+.nav-links a {
+    text-decoration: none !important;
+}
+
+/* Hero buttons (View My Work / Download Resume) */
+.hero a,
+.hero .btn,
+.hero .btn-primary,
+.hero .btn-secondary {
+    text-decoration: none !important;
+}
+
+/* Also remove underline on hover/focus */
+.nav-links a:hover,
+.nav-links a:focus,
+.hero a:hover,
+.hero a:focus {
+    text-decoration: none !important;
+}
