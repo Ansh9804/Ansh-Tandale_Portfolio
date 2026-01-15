@@ -10,9 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. Typing Animation (Hero Section) ---
+    // --- 2. Typing Animation ---
     const typedTextSpan = document.querySelector(".typed-text");
-    const textArray = ["Data Analyst.", "AI Researcher.", "Python Developer.", "Cloud Architect."];
+    const textArray = ["Data Analyst", "AI Researcher", "Python Developer", "Cloud Architect"];
     const typingDelay = 100;
     const erasingDelay = 50;
     const newTextDelay = 2000; 
@@ -45,118 +45,73 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(type, newTextDelay + 250);
     }
 
-    // --- 3. "Neon Fluid" Background Animation ---
+    // --- 3. "Data Frequency Wave" Animation ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
-        let particlesArray = [];
-        const colors = ['#4facfe', '#00f2fe', '#a18cd1', '#ff014f']; // Neon Anime Palette
-        
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        let mouse = {
-            x: null,
-            y: null,
-            radius: 150
-        }
+        let wave = {
+            y: canvas.height / 2,
+            length: 0.01,
+            amplitude: 100,
+            frequency: 0.01
+        };
+
+        let increment = wave.frequency;
+        
+        let mouse = { y: canvas.height / 2 };
 
         window.addEventListener('mousemove', (event) => {
-            mouse.x = event.x;
+            // Mouse interaction changes wave amplitude slightly
             mouse.y = event.y;
         });
 
-        class Particle {
-            constructor(x, y, dx, dy, size, color) {
-                this.x = x;
-                this.y = y;
-                this.dx = dx;
-                this.dy = dy;
-                this.size = size;
-                this.color = color;
-                this.angle = Math.random() * Math.PI * 2; // For waviness
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 10; // Neon Glow
-                ctx.shadowColor = this.color;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-
-            update() {
-                // Fluid Wavy Motion
-                this.angle += 0.05;
-                this.y += this.dy + Math.sin(this.angle) * 0.5;
-                this.x += this.dx + Math.cos(this.angle) * 0.5;
-
-                // Wall Bounce
-                if (this.x > canvas.width || this.x < 0) this.dx = -this.dx;
-                if (this.y > canvas.height || this.y < 0) this.dy = -this.dy;
-
-                // Mouse Interaction (Fluid Push)
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < mouse.radius) {
-                    const forceDirectionX = dx / distance;
-                    const forceDirectionY = dy / distance;
-                    const force = (mouse.radius - distance) / mouse.radius;
-                    const directionX = forceDirectionX * force * 3;
-                    const directionY = forceDirectionY * force * 3;
-
-                    this.x -= directionX;
-                    this.y -= directionY;
-                }
-
-                this.draw();
-            }
-        }
-
-        function init() {
-            particlesArray = [];
-            // Particle count
-            let numberOfParticles = (canvas.height * canvas.width) / 10000; 
-            
-            for (let i = 0; i < numberOfParticles; i++) {
-                let size = (Math.random() * 3) + 1;
-                let x = Math.random() * canvas.width;
-                let y = Math.random() * canvas.height;
-                let dx = (Math.random() * 1.5) - 0.75; 
-                let dy = (Math.random() * 1.5) - 0.75; 
-                let color = colors[Math.floor(Math.random() * colors.length)];
-                
-                particlesArray.push(new Particle(x, y, dx, dy, size, color));
-            }
-        }
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            wave.y = canvas.height / 2;
+        });
 
         function animate() {
             requestAnimationFrame(animate);
-            // Trail Effect: Draw semi-transparent rect instead of clearRect
-            ctx.fillStyle = 'rgba(16, 16, 16, 0.15)'; 
+            // Trail effect for fluid motion
+            ctx.fillStyle = 'rgba(11, 12, 16, 0.1)'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-            }
+
+            // Draw 3 overlapping waves
+            drawWave(1, '#66fcf1', 0);       // Cyan (Primary)
+            drawWave(0.5, '#45a29e', 200);   // Muted Teal (Secondary)
+            drawWave(0.3, '#1f2833', 400);   // Dark Blue (Background)
+
+            increment += wave.frequency;
         }
 
-        window.addEventListener('resize', () => {
-            canvas.width = innerWidth;
-            canvas.height = innerHeight;
-            init();
-        });
+        function drawWave(opacity, color, offset) {
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
 
-        window.addEventListener('mouseout', () => {
-            mouse.x = undefined;
-            mouse.y = undefined;
-        });
+            // Create the sine wave
+            for (let i = 0; i < canvas.width; i++) {
+                // Formula: y = sin(x)
+                // We add mouse interaction to the amplitude
+                let y = wave.y + Math.sin(i * wave.length + increment + offset) * (wave.amplitude * Math.sin(increment));
+                
+                // Draw lines or small dots? Let's do dots for a "Data" feel
+                // ctx.lineTo(i, y); // This makes a solid line
+                
+                // "Data Point" Style:
+                if (i % 15 === 0) { // Only draw every 15th point
+                   ctx.fillStyle = color;
+                   ctx.fillRect(i, y, 2, 2); // Small data pixels
+                }
+            }
+            
+            ctx.strokeStyle = color;
+            ctx.stroke();
+        }
 
-        init();
         animate();
     }
 });
