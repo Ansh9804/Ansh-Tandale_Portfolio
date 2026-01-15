@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. NEW CUSTOM CURSOR LOGIC ---
-    // Inject cursor elements via JS so you don't need to change HTML
     const cursorDot = document.createElement('div');
     cursorDot.classList.add('cursor-dot');
     const cursorOutline = document.createElement('div');
@@ -13,16 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const posX = e.clientX;
         const posY = e.clientY;
         
-        // Dot follows instantly
         cursorDot.style.left = `${posX}px`;
         cursorDot.style.top = `${posY}px`;
         
-        // Outline follows with lag (CSS transition handles smoothness)
-        cursorOutline.style.left = `${posX}px`;
-        cursorOutline.style.top = `${posY}px`;
+        cursorOutline.animate({
+            left: `${posX}px`,
+            top: `${posY}px`
+        }, { duration: 500, fill: "forwards" });
     });
 
-    // Hover effect for interactive elements
     const interactiveElements = document.querySelectorAll('a, .btn, .theme-switch, .project-card, .contact-card, .skill-category, input, button');
     interactiveElements.forEach(el => {
         el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
@@ -36,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeSwitch = document.querySelector('.theme-switch');
     const body = document.body;
 
-    // Check localStorage on load
     if (localStorage.getItem('theme') === 'light') {
         body.classList.add('light-mode');
     }
@@ -109,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 5. Neural Data Lattice (Gravity Background) ---
+    // --- 5. Neural Data Lattice (BLUE THEME) ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -118,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let particlesArray;
 
-        // Mouse acts as a "Gravity Well" for background particles too
         let mouse = {
             x: null,
             y: null,
@@ -172,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
                 if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
 
-                // Mouse Gravity Logic for Background
+                // Data Gravity Logic
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
@@ -205,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
                 let directionX = (Math.random() * 0.5) - 0.25;
                 let directionY = (Math.random() * 0.5) - 0.25;
-                let color = '#66fcf1';
+                let color = '#2979ff'; // Initial Blue Color
                 particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
             }
         }
@@ -215,9 +211,17 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.clearRect(0, 0, innerWidth, innerHeight);
 
             const isLight = document.body.classList.contains('light-mode');
-            const particleColor = isLight ? '#2962ff' : '#45a29e'; 
-            const activeColor = isLight ? '#ff3366' : '#ffffff'; 
-            const lineRGB = isLight ? '41, 98, 255' : '102, 252, 241';
+            
+            // COLOR UPDATE: Switched from Teal to Electric Blue
+            // Dark Mode: Blue (#2979ff), Light Mode: Darker Blue (#0062ff)
+            const particleColor = isLight ? '#0062ff' : '#2979ff'; 
+            
+            // Active Gravity Color: Bright Cyan/White for pop
+            const activeColor = isLight ? '#ff3d00' : '#ffffff'; 
+            
+            // Line RGB Values: (R, G, B) for the strokeStyle
+            // Dark Mode Line: 41, 121, 255 (Blue)
+            const lineRGB = isLight ? '0, 98, 255' : '41, 121, 255';
 
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update(particleColor, activeColor);
