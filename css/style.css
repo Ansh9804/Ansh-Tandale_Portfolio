@@ -2,13 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 /* --- General Reset --- */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; cursor: none; /* Hide default cursor for custom one */ }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; cursor: none; /* Hide default cursor */ }
 body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
 a { text-decoration: none; color: inherit; transition: 0.3s; }
 ul { list-style: none; }
 h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 700; }
 
-/* --- Theme Variables (Dark Default) --- */
+/* --- Theme Variables (Dark Mode Default) --- */
 :root {
     --primary: #66fcf1;
     --secondary: #45a29e;
@@ -25,9 +25,9 @@ h1, h2, h3, h4, h5, h6 { color: var(--header-color); font-weight: 700; }
 
 /* --- Light Mode Variables --- */
 body.light-mode {
-    --primary: #2962ff; /* Deep Blue */
+    --primary: #2962ff;
     --secondary: #0039cb;
-    --bg-color: #e0e5ec; /* Neumorphic Grey */
+    --bg-color: #e0e5ec;
     --card-bg: #e0e5ec;
     --card-border: 1px solid rgba(255, 255, 255, 0.4);
     --text-color: #4a5568;
@@ -49,7 +49,8 @@ body:hover .cursor-outline.hovered { width: 60px; height: 60px; background-color
 /* --- Background Animation Canvas --- */
 #bg-canvas {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-    opacity: 0.8; transition: opacity 0.5s;
+    opacity: 1; transition: opacity 0.5s;
+    background: var(--bg-color);
 }
 
 /* --- Navbar --- */
@@ -98,7 +99,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
     border-radius: 50%; padding: 4px;
     background: linear-gradient(to right, var(--primary), var(--secondary));
     box-shadow: 0 0 20px rgba(102, 252, 241, 0.3);
-    animation: float 6s ease-in-out infinite; /* Floating Character Effect */
+    animation: float 6s ease-in-out infinite; /* Floating Effect */
 }
 @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
 
@@ -113,7 +114,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
 @keyframes wave-animation { 0% { transform: rotate( 0.0deg) } 10% { transform: rotate(14.0deg) } 20% { transform: rotate(-8.0deg) } 30% { transform: rotate(14.0deg) } 40% { transform: rotate(-4.0deg) } 50% { transform: rotate(10.0deg) } 60% { transform: rotate( 0.0deg) } 100% { transform: rotate( 0.0deg) } }
 
 .type-wrap { font-size: 1.5rem; font-weight: 500; color: var(--text-color); margin-bottom: 30px; min-height: 1.6em; }
-.typed-text { color: var(--primary); }
+.typed-text { color: var(--primary); border-bottom: none; }
 
 /* Liquid Buttons */
 .hero-btns { margin-top: 40px; }
@@ -140,7 +141,7 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
     width: 50px; height: 50px; background: var(--card-bg);
     border-radius: 50%; margin: 0 10px; font-size: 1.2rem;
     color: var(--text-color); transition: 0.3s;
-    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); /* Neumorphic Shadow */
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
 }
 .social-links a:hover {
     color: var(--primary); transform: translateY(-5px) scale(1.1);
@@ -156,25 +157,24 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
 /* --- Isometric 3D Cards --- */
 .projects-grid, .skills-grid, .contact-grid, .publications-wrapper {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;
-    perspective: 1000px; /* Essential for 3D tilt */
+    perspective: 1000px;
 }
 
 .project-card, .contact-card, .pub-card, .skill-category, .timeline-item, .cert-list li {
     background: var(--card-bg);
     padding: 30px; border-radius: 12px;
     border: var(--card-border);
-    transition: transform 0.1s; /* Faster for Tilt.js */
-    box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); /* Neumorphic */
+    transition: transform 0.1s;
+    box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
     transform-style: preserve-3d;
 }
 
-/* Hover Effects */
+/* Card Hover Interactions */
 .project-card:hover h3, .contact-card:hover h3 { color: var(--primary); }
 .icon-box { font-size: 2rem; color: var(--primary); margin-bottom: 20px; transition: 0.3s; }
-.contact-card:hover .icon-box, .skill-category:hover .icon-box { transform: scale(1.2) rotate(10deg); } /* Animated Icon */
+.contact-card:hover .icon-box, .skill-category:hover .icon-box { transform: scale(1.2) rotate(10deg); } 
 
-/* Card Typography */
-.project-info h3, .contact-card h3, .pub-header h3 { font-size: 1.25rem; margin-bottom: 10px; color: var(--header-color); transform: translateZ(20px); /* 3D pop */ }
+.project-info h3, .contact-card h3, .pub-header h3 { font-size: 1.25rem; margin-bottom: 10px; color: var(--header-color); transform: translateZ(20px); }
 .role, .cert-details span, .pub-venue { color: var(--secondary); font-size: 0.85rem; margin-bottom: 15px; display: block; font-weight: 500; transform: translateZ(15px); }
 .tech-stack span, .badge {
     background: var(--bg-color); color: var(--text-color); padding: 4px 10px;
@@ -182,18 +182,15 @@ body.light-mode .theme-switch .switch-handle { transform: translateX(24px); }
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Timeline */
 .timeline-item { border-left: 3px solid var(--secondary); padding-left: 20px; display: block; margin-bottom: 30px; border-radius: 0; border-top: none; border-right: none; border-bottom: none; box-shadow: none; background: transparent; }
 .timeline-item h3 { color: var(--header-color); margin-bottom: 5px; }
 .timeline-item .company { color: var(--primary); font-weight: 500; font-size: 0.9rem; margin-bottom: 10px; display: block; }
 
-/* Certifications */
 .cert-list { display: grid; gap: 20px; grid-template-columns: 1fr; }
 .cert-list li { display: flex; align-items: center; gap: 20px; }
 .cert-list i { font-size: 1.8rem; color: var(--primary); min-width: 40px; text-align: center; transition: 0.3s; }
 .cert-list li:hover i { transform: rotate(20deg) scale(1.2); }
 
-/* Responsive */
 @media (max-width: 768px) {
     .nav-links { display: none; flex-direction: column; background: var(--bg-color); position: absolute; top: 60px; right: 0; width: 100%; padding: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
     .nav-links.active { display: flex; }
