@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. Typing Animation (Hero Section) ---
     const typedTextSpan = document.querySelector(".typed-text");
-    const textArray = ["Data Analyst.", "Researcher.", "Python Developer.", "AI Enthusiast."];
+    const textArray = ["Data Analyst.", "AI Researcher.", "Python Developer.", "Cloud Architect."];
     const typingDelay = 100;
     const erasingDelay = 50;
-    const newTextDelay = 2000; // Delay between current and next text
+    const newTextDelay = 2000; 
     let textArrayIndex = 0;
     let charIndex = 0;
 
