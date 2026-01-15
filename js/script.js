@@ -1,8 +1,40 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. Navigation Logic ---
+    // --- 1. Custom Cursor Logic ---
+    const cursorDot = document.createElement('div');
+    cursorDot.classList.add('cursor-dot');
+    const cursorOutline = document.createElement('div');
+    cursorOutline.classList.add('cursor-outline');
+    document.body.appendChild(cursorDot);
+    document.body.appendChild(cursorOutline);
+
+    window.addEventListener('mousemove', (e) => {
+        const posX = e.clientX;
+        const posY = e.clientY;
+        
+        cursorDot.style.left = `${posX}px`;
+        cursorDot.style.top = `${posY}px`;
+        
+        // Animate outline with slight delay
+        cursorOutline.animate({
+            left: `${posX}px`,
+            top: `${posY}px`
+        }, { duration: 500, fill: "forwards" });
+    });
+
+    // Hover effect for cursor
+    const interactiveElements = document.querySelectorAll('a, .btn, .theme-switch, .project-card, .contact-card');
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => cursorOutline.classList.add('hovered'));
+        el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hovered'));
+    });
+
+
+    // --- 2. Navigation & Theme Toggle ---
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
+    const themeSwitch = document.querySelector('.theme-switch');
+    const body = document.body;
 
     if (hamburger) {
         hamburger.addEventListener('click', () => {
@@ -10,7 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. Typing Animation ---
+    if (themeSwitch) {
+        themeSwitch.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            // Save preference (Optional)
+            // localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+    }
+
+    // --- 3. Typing Animation ---
     const typedTextSpan = document.querySelector(".typed-text");
     const textArray = ["Data Analyst", "AI Researcher", "Python Developer", "Cloud Architect"];
     const typingDelay = 100;
@@ -41,77 +81,85 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if(typedTextSpan) {
-        setTimeout(type, newTextDelay + 250);
-    }
+    if(typedTextSpan) setTimeout(type, newTextDelay + 250);
 
-    // --- 3. "Data Frequency Wave" Animation ---
+
+    // --- 4. 3D Tilt Effect (Isometric) ---
+    const cards = document.querySelectorAll('.project-card, .contact-card, .pub-card, .skill-category');
+    
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -10; // Max rotation deg
+            const rotateY = ((x - centerX) / centerX) * 10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        });
+    });
+
+
+    // --- 5. Data Wave Background (Responsive) ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        let wave = {
-            y: canvas.height / 2,
-            length: 0.01,
-            amplitude: 100,
-            frequency: 0.01
-        };
-
+        let wave = { y: canvas.height / 2, length: 0.01, amplitude: 100, frequency: 0.01 };
         let increment = wave.frequency;
-        
-        let mouse = { y: canvas.height / 2 };
+        let input = { y: canvas.height / 2, active: false };
 
-        window.addEventListener('mousemove', (event) => {
-            // Mouse interaction changes wave amplitude slightly
-            mouse.y = event.y;
-        });
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            wave.y = canvas.height / 2;
-        });
+        window.addEventListener('mousemove', (e) => { input.y = e.clientY; input.active = true; });
+        window.addEventListener('touchstart', (e) => { input.y = e.touches[0].clientY; input.active = true; }, {passive: true});
+        window.addEventListener('touchmove', (e) => { input.y = e.touches[0].clientY; input.active = true; }, {passive: true});
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
         function animate() {
             requestAnimationFrame(animate);
-            // Trail effect for fluid motion
-            ctx.fillStyle = 'rgba(11, 12, 16, 0.1)'; 
+            // Color adapts to Light/Dark mode via getComputedStyle logic or hardcoded variables
+            // Check body class for color selection
+            const isLight = document.body.classList.contains('light-mode');
+            const clearColor = isLight ? 'rgba(224, 229, 236, 0.2)' : 'rgba(11, 12, 16, 0.15)';
+            const color1 = isLight ? '#2962ff' : '#66fcf1';
+            const color2 = isLight ? '#0039cb' : '#45a29e';
+
+            ctx.fillStyle = clearColor; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw 3 overlapping waves
-            drawWave(1, '#66fcf1', 0);       // Cyan (Primary)
-            drawWave(0.5, '#45a29e', 200);   // Muted Teal (Secondary)
-            drawWave(0.3, '#1f2833', 400);   // Dark Blue (Background)
+            let targetY = input.active ? input.y : canvas.height / 2;
+            wave.y += (targetY - wave.y) * 0.05;
+
+            drawWave(color1, 0);
+            drawWave(color2, 200);
 
             increment += wave.frequency;
         }
 
-        function drawWave(opacity, color, offset) {
+        function drawWave(color, offset) {
             ctx.beginPath();
-            ctx.moveTo(0, canvas.height / 2);
-
-            // Create the sine wave
+            ctx.moveTo(0, wave.y);
             for (let i = 0; i < canvas.width; i++) {
-                // Formula: y = sin(x)
-                // We add mouse interaction to the amplitude
-                let y = wave.y + Math.sin(i * wave.length + increment + offset) * (wave.amplitude * Math.sin(increment));
+                let distanceFromCenter = Math.abs(wave.y - (canvas.height/2));
+                let dynamicAmp = wave.amplitude + (distanceFromCenter * 0.2);
+                let y = wave.y + Math.sin(i * wave.length + increment + offset) * (dynamicAmp * Math.sin(increment));
                 
-                // Draw lines or small dots? Let's do dots for a "Data" feel
-                // ctx.lineTo(i, y); // This makes a solid line
-                
-                // "Data Point" Style:
-                if (i % 15 === 0) { // Only draw every 15th point
+                if (i % 12 === 0) { 
                    ctx.fillStyle = color;
-                   ctx.fillRect(i, y, 2, 2); // Small data pixels
+                   let size = 1.5 + Math.sin(i) * 0.5;
+                   ctx.fillRect(i, y, size, size); 
                 }
             }
-            
-            ctx.strokeStyle = color;
-            ctx.stroke();
         }
-
         animate();
     }
 });
