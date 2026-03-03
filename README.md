@@ -44,15 +44,6 @@ Real-time vision system to detect driver drowsiness and prevent accidents.
 
 ---
 
-### 📊 GitHub Stats
-
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Ansh9804&show_icons=true&theme=dark&hide_border=true" height="160" alt="Ansh's GitHub Stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Ansh9804&layout=compact&theme=dark&hide_border=true" height="160" alt="Top Languages" />
-</div>
-
----
-
 ### 📫 Connect with Me
 
 * 💼 **LinkedIn:** [linkedin.com/in/ansh-tandale](https://www.linkedin.com/in/ansh-tandale)
