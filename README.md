@@ -48,7 +48,7 @@ Real-time vision system to detect driver drowsiness and prevent accidents.
 
 * 💼 **LinkedIn:** [linkedin.com/in/ansh-tandale](https://www.linkedin.com/in/ansh-tandale)
 * 📧 **Email:** [anshtandale9804@gmail.com](mailto:anshtandale9804@gmail.com)
-* 🌐 **Portfolio:** [Check out my Website](https://ansh9804.github.io/portfolio/) ---
+* 🌐 **Portfolio:** [Check out my Website]([https://ansh9804.github.io/portfolio/](https://anshtandaleportfolio.vercel.app/)) ---
 <p align="center">
   <i>"Data is the new oil, but accessibility is the engine."</i>
 </p>
