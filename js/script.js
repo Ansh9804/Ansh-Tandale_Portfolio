@@ -1,254 +1,205 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. NEW CUSTOM CURSOR LOGIC ---
-    const cursorDot = document.createElement('div');
-    cursorDot.classList.add('cursor-dot');
-    const cursorOutline = document.createElement('div');
-    cursorOutline.classList.add('cursor-outline');
-    document.body.appendChild(cursorDot);
-    document.body.appendChild(cursorOutline);
+    // --- 1. Inject HTML5 Fluid Aurora Canvas ---
+    // The entire atmospheric motion is now rendered via an ultra-smooth, unified canvas
+    const canvas = document.createElement('canvas');
+    canvas.id = 'aesthetic-canvas';
+    document.body.appendChild(canvas);
+    
+    const ctx = canvas.getContext('2d');
+    
+    let mouse = { x: undefined, y: undefined, active: false };
+    let blobs = [];
+    let animationFrameId;
 
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initBlobs();
+    }
+
+    // Dynamic Cursor Tracking for the "Interactive Flow" Blob
     window.addEventListener('mousemove', (e) => {
-        const posX = e.clientX;
-        const posY = e.clientY;
-        
-        cursorDot.style.left = `${posX}px`;
-        cursorDot.style.top = `${posY}px`;
-        
-        cursorOutline.animate({
-            left: `${posX}px`,
-            top: `${posY}px`
-        }, { duration: 500, fill: "forwards" });
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
     });
 
-    const interactiveElements = document.querySelectorAll('a, .btn, .theme-switch, .project-card, .contact-card, .skill-category, input, button');
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
-        el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+    window.addEventListener('mouseleave', () => {
+        mouse.active = false;
     });
 
+    class FluidBlob {
+        constructor(color, baseRadiusFactor) {
+            this.color = color;
+            this.baseRadiusFactor = baseRadiusFactor;
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            
+            // Natural slow angular movement
+            this.angle = Math.random() * Math.PI * 2;
+            this.speed = Math.random() * 0.3 + 0.15; // Extremely serene drift
+            this.radius = Math.min(canvas.width, canvas.height) * this.baseRadiusFactor;
+            
+            // Individual pulse frequency
+            this.pulse = Math.random() * Math.PI;
+            this.pulseSpeed = Math.random() * 0.002 + 0.001;
+        }
 
-    // --- 2. Navigation & Persistent Theme Toggle ---
+        update(isMouseBlob = false) {
+            if (isMouseBlob && mouse.active) {
+                // Smooth easing/interpolation toward the mouse
+                const targetX = mouse.x;
+                const targetY = mouse.y;
+                this.x += (targetX - this.x) * 0.04;
+                this.y += (targetY - this.y) * 0.04;
+            } else {
+                // Slow fluid drift physics
+                this.angle += (Math.random() - 0.5) * 0.02; // Gentle curve shifts
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+
+                // Soft bouncing logic off borders with overlap margin
+                const margin = this.radius * 0.5;
+                if (this.x < -margin || this.x > canvas.width + margin) {
+                    this.angle = Math.PI - this.angle;
+                }
+                if (this.y < -margin || this.y > canvas.height + margin) {
+                    this.angle = -this.angle;
+                }
+            }
+
+            // Subtle, rhythmic breathing expansion & contraction
+            this.pulse += this.pulseSpeed;
+            this.currentRadius = this.radius * (1 + Math.sin(this.pulse) * 0.12);
+        }
+
+        draw() {
+            ctx.save();
+            const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.currentRadius);
+            
+            // High-dispersion soft gradient fade-out
+            gradient.addColorStop(0, this.color);
+            gradient.addColorStop(0.4, this.color.replace('1)', '0.5)'));
+            gradient.addColorStop(1, this.color.replace('1)', '0)'));
+            
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    function initBlobs() {
+        // Re-calculate size constants
+        const maxDim = Math.max(canvas.width, canvas.height);
+        
+        blobs = [
+            // 1. Soothing Lavender Cloud
+            new FluidBlob('rgba(165, 180, 252, 1)', 0.65), 
+            // 2. Sweet Rose Cloud
+            new FluidBlob('rgba(253, 164, 175, 1)', 0.7),
+            // 3. Calm Sky Cloud
+            new FluidBlob('rgba(186, 230, 253, 1)', 0.55),
+            // 4. Deep Luminous Iris Cloud (Slow back-flow)
+            new FluidBlob('rgba(221, 214, 254, 1)', 0.6)
+        ];
+
+        // Special Interactive Cursor Blob (Gently follows user)
+        const mouseBlob = new FluidBlob('rgba(244, 114, 182, 1)', 0.4); // Follower Pink
+        mouseBlob.speed = 0; 
+        blobs.push(mouseBlob);
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Extremely subtle overlap blending configuration
+        ctx.globalCompositeOperation = 'normal';
+        ctx.globalAlpha = 0.42; // Total ethereal transparency
+
+        blobs.forEach((blob, index) => {
+            const isMouseBlob = index === blobs.length - 1;
+            blob.update(isMouseBlob);
+            blob.draw();
+        });
+
+        animationFrameId = requestAnimationFrame(animate);
+    }
+
+    // Initialize & Listeners
+    window.addEventListener('resize', () => {
+        cancelAnimationFrame(animationFrameId);
+        resizeCanvas();
+        animate();
+    });
+
+    resizeCanvas();
+    animate();
+
+
+    // --- 2. Mobile Menu Toggle ---
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
-    const themeSwitch = document.querySelector('.theme-switch');
-    const body = document.body;
-
-    if (localStorage.getItem('theme') === 'light') {
-        body.classList.add('light-mode');
-    }
 
     if (hamburger) {
         hamburger.addEventListener('click', () => {
             navLinks.classList.toggle('active');
+            const icon = hamburger.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-times');
+            }
         });
     }
 
-    if (themeSwitch) {
-        themeSwitch.addEventListener('click', () => {
-            body.classList.toggle('light-mode');
-            localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
-        });
-    }
-
-    // --- 3. Typing Animation ---
-    const typedTextSpan = document.querySelector(".typed-text");
-    const textArray = ["Data Analyst", "AI Researcher", "Python Developer", "Cloud Architect"];
-    const typingDelay = 100;
-    const erasingDelay = 50;
-    const newTextDelay = 2000; 
-    let textArrayIndex = 0;
-    let charIndex = 0;
-
-    function type() {
-        if (typedTextSpan && charIndex < textArray[textArrayIndex].length) {
-            typedTextSpan.textContent += textArray[textArrayIndex].charAt(charIndex);
-            charIndex++;
-            setTimeout(type, typingDelay);
-        } else if (typedTextSpan) {
-            setTimeout(erase, newTextDelay);
-        }
-    }
-
-    function erase() {
-        if (typedTextSpan && charIndex > 0) {
-            typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex - 1);
-            charIndex--;
-            setTimeout(erase, erasingDelay);
-        } else if (typedTextSpan) {
-            textArrayIndex++;
-            if (textArrayIndex >= textArray.length) textArrayIndex = 0;
-            setTimeout(type, typingDelay + 1100);
-        }
-    }
-
-    if(typedTextSpan) setTimeout(type, newTextDelay + 250);
-
-
-    // --- 4. 3D Tilt Effect (Isometric) ---
-    const cards = document.querySelectorAll('.project-card, .contact-card, .pub-card, .skill-category');
-    
-    cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -8; 
-            const rotateY = ((x - centerX) / centerX) * 8;
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+    const navItems = document.querySelectorAll('.nav-links a');
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            if (navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                const icon = hamburger.querySelector('i');
+                if (icon) {
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                }
+            }
         });
     });
 
-
-    // --- 5. Neural Data Lattice (BLUE THEME) ---
-    const canvas = document.getElementById('bg-canvas');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        let particlesArray;
-
-        let mouse = {
-            x: null,
-            y: null,
-            radius: 150 
-        }
-
-        window.addEventListener('mousemove', (event) => {
-            mouse.x = event.x;
-            mouse.y = event.y;
+    // --- 3. Elegant Staggered Content Reveal Engine ---
+    const revealTargets = [
+        '.section-title', '.section-subtitle', '.project-card', 
+        '.skill-category', '.pub-card', '.timeline-item', 
+        '.cert-list li', '.contact-card', '.about-content p'
+    ];
+    
+    revealTargets.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => {
+            el.classList.add('reveal');
         });
-        
-        window.addEventListener('touchstart', (e) => {
-            mouse.x = e.touches[0].clientX;
-            mouse.y = e.touches[0].clientY;
-        }, {passive: true});
-        
-        window.addEventListener('touchmove', (e) => {
-            mouse.x = e.touches[0].clientX;
-            mouse.y = e.touches[0].clientY;
-        }, {passive: true});
+    });
 
-        window.addEventListener('resize', () => {
-            canvas.width = innerWidth;
-            canvas.height = innerHeight;
-            init();
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.1
+    };
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('active');
+                }, index * 80);
+                observer.unobserve(entry.target);
+            }
         });
+    }, observerOptions);
 
-        window.addEventListener('mouseout', () => {
-            mouse.x = undefined;
-            mouse.y = undefined;
-        });
+    document.querySelectorAll('.reveal').forEach(el => {
+        revealObserver.observe(el);
+    });
 
-        class Particle {
-            constructor(x, y, directionX, directionY, size, color) {
-                this.x = x;
-                this.y = y;
-                this.directionX = directionX;
-                this.directionY = directionY;
-                this.size = size;
-                this.color = color;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-
-            update(particleColor, activeColor) {
-                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-
-                // Data Gravity Logic
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < mouse.radius) {
-                    const forceDirectionX = dx / distance;
-                    const forceDirectionY = dy / distance;
-                    const force = (mouse.radius - distance) / mouse.radius;
-                    const directionX = forceDirectionX * force * 2;
-                    const directionY = forceDirectionY * force * 2;
-                    
-                    this.x += directionX;
-                    this.y += directionY;
-                    this.color = activeColor; 
-                } else {
-                    this.color = particleColor;
-                    this.x += this.directionX;
-                    this.y += this.directionY;
-                }
-                this.draw();
-            }
-        }
-
-        function init() {
-            particlesArray = [];
-            let numberOfParticles = (canvas.height * canvas.width) / 9000;
-            for (let i = 0; i < numberOfParticles; i++) {
-                let size = (Math.random() * 2) + 1;
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                let directionX = (Math.random() * 0.5) - 0.25;
-                let directionY = (Math.random() * 0.5) - 0.25;
-                let color = '#2979ff'; // Initial Blue Color
-                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
-            }
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
-
-            const isLight = document.body.classList.contains('light-mode');
-            
-            // COLOR UPDATE: Switched from Teal to Electric Blue
-            // Dark Mode: Blue (#2979ff), Light Mode: Darker Blue (#0062ff)
-            const particleColor = isLight ? '#0062ff' : '#2979ff'; 
-            
-            // Active Gravity Color: Bright Cyan/White for pop
-            const activeColor = isLight ? '#ff3d00' : '#ffffff'; 
-            
-            // Line RGB Values: (R, G, B) for the strokeStyle
-            // Dark Mode Line: 41, 121, 255 (Blue)
-            const lineRGB = isLight ? '0, 98, 255' : '41, 121, 255';
-
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update(particleColor, activeColor);
-            }
-            connect(lineRGB);
-        }
-
-        function connect(rgbColor) {
-            let opacityValue = 1;
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-                        opacityValue = 1 - (distance / 20000);
-                        ctx.strokeStyle = `rgba(${rgbColor}, ${opacityValue})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        init();
-        animate();
-    }
 });
